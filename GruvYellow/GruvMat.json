@@ -11,7 +11,7 @@
         "FG_SUBTLE": "#616c68  \u2014 very muted",
         "FG_DIM": "#9da9a0  \u2014 channel names / interactive normal"
     },
-    "name": "GruvYellow Material",
+    "name": "Gruvbox Material",
     "description": "Gruvbox Material dark theme. Accent: #dbbc7f (yellow). Softer, desaturated Material variant.",
     "authors": [
         {
@@ -33,7 +33,7 @@
             "#d3c6aa"
         ],
         "BACKGROUND_TERTIARY": [
-            "#141b1e",
+            "#272e33",
             "#d3c6aa"
         ],
         "BACKGROUND_MOBILE_PRIMARY": [
@@ -45,7 +45,7 @@
             "#d3c6aa"
         ],
         "BACKGROUND_NESTED_FLOATING": [
-            "#1e2326",
+            "#272e33",
             "#d3c6aa"
         ],
         "BACKGROUND_FLOATING": [
@@ -57,7 +57,7 @@
             "#d3c6aa"
         ],
         "INPUT_BACKGROUND": [
-            "#141b1e",
+            "#272e33",
             "#d3c6aa"
         ],
         "EMBED_BACKGROUND": [
@@ -113,7 +113,7 @@
             "#d3c6aa"
         ],
         "BG_BASE_TERTIARY": [
-            "#141b1e",
+            "#272e33",
             "#d3c6aa"
         ],
         "CARD_PRIMARY_BG": [
@@ -125,7 +125,7 @@
             "#b9c0ab"
         ],
         "CARD_SECONDARY_BG": [
-            "#141b1e",
+            "#272e33",
             "#d3c6aa"
         ],
         "DEPRECATED_CARD_BG": [
@@ -141,7 +141,7 @@
             "#d3c6aa"
         ],
         "DEPRECATED_TEXT_INPUT_BG": [
-            "#141b1e",
+            "#272e33",
             "#d3c6aa"
         ],
         "DEPRECATED_TEXT_INPUT_BORDER": [
@@ -161,7 +161,7 @@
             "#374145"
         ],
         "DEPRECATED_QUICKSWITCHER_INPUT_BACKGROUND": [
-            "#141b1e",
+            "#272e33",
             "#d3c6aa"
         ],
         "DEPRECATED_QUICKSWITCHER_INPUT_PLACEHOLDER": [
@@ -181,8 +181,8 @@
             "#d3c6aa"
         ],
         "ELEVATION_STROKE": [
-            "#2e383c",
-            "#b9c0ab"
+            "#272e33",
+            "#d3c6aa"
         ],
         "HEADER_PRIMARY": [
             "#d3c6aa",
@@ -317,7 +317,7 @@
             "#d3c6aa"
         ],
         "INFO_DANGER_BACKGROUND": [
-            "#141b1e",
+            "#272e33",
             "#d3c6aa"
         ],
         "INFO_DANGER_FOREGROUND": [
@@ -329,7 +329,7 @@
             "#e67e80"
         ],
         "INFO_HELP_BACKGROUND": [
-            "#141b1e",
+            "#272e33",
             "#d3c6aa"
         ],
         "INFO_HELP_FOREGROUND": [
@@ -341,7 +341,7 @@
             "#1e2326"
         ],
         "INFO_POSITIVE_BACKGROUND": [
-            "#141b1e",
+            "#272e33",
             "#d3c6aa"
         ],
         "INFO_POSITIVE_FOREGROUND": [
@@ -353,7 +353,7 @@
             "#1e2326"
         ],
         "INFO_WARNING_BACKGROUND": [
-            "#141b1e",
+            "#272e33",
             "#d3c6aa"
         ],
         "INFO_WARNING_FOREGROUND": [
@@ -413,7 +413,7 @@
             "#1e2326"
         ],
         "REDESIGN_CHAT_INPUT_BACKGROUND": [
-            "#141b1e",
+            "#272e33",
             "#d3c6aa"
         ],
         "BUG_REPORTER_MODAL_SUBMITTING_BACKGROUND": [
@@ -438,8 +438,8 @@
         "PRIMARY_660": "#1e2326",
         "PRIMARY_700": "#1e2326",
         "PRIMARY_730": "#1e2326",
-        "PRIMARY_800": "#141b1e",
-        "PRIMARY_900": "#141b1e",
+        "PRIMARY_800": "#272e33",
+        "PRIMARY_900": "#272e33",
         "BRAND_230": "#e5c890",
         "BRAND_260": "#e5c890",
         "BRAND_300": "#dbbc7f",
@@ -459,12 +459,12 @@
         "PLUM_14": "#374145",
         "PLUM_15": "#2e383c",
         "PLUM_16": "#272e33",
-        "PLUM_17": "#141b1e",
+        "PLUM_17": "#272e33",
         "PLUM_18": "#272e33",
         "PLUM_19": "#272e33",
         "PLUM_20": "#1e2326",
         "PLUM_21": "#1e2326",
-        "PLUM_22": "#141b1e",
+        "PLUM_22": "#272e33",
         "GREEN_100": "#a7c080",
         "GREEN_130": "#a7c080",
         "GREEN_160": "#a7c080",

@@ -11,7 +11,7 @@
         "FG_SUBTLE": "#7c6f64  \u2014 very muted",
         "FG_DIM": "#bdae93  \u2014 channel names / interactive normal"
     },
-    "name": "GruvYellow Hard",
+    "name": "Gruvbox Hard",
     "description": "Gruvbox Hard dark theme. Accent: #d79921 (yellow). Deeper blacks, high contrast variant.",
     "authors": [
         {
@@ -33,8 +33,8 @@
             "#ebdbb2"
         ],
         "BACKGROUND_TERTIARY": [
-            "#0d1011",
-            "#f9f5d7"
+            "#282828",
+            "#ebdbb2"
         ],
         "BACKGROUND_MOBILE_PRIMARY": [
             "#1d2021",
@@ -45,8 +45,8 @@
             "#ebdbb2"
         ],
         "BACKGROUND_NESTED_FLOATING": [
-            "#1d2021",
-            "#fbf1c7"
+            "#282828",
+            "#ebdbb2"
         ],
         "BACKGROUND_FLOATING": [
             "#282828",
@@ -57,8 +57,8 @@
             "#fbf1c7"
         ],
         "INPUT_BACKGROUND": [
-            "#0d1011",
-            "#f9f5d7"
+            "#282828",
+            "#ebdbb2"
         ],
         "EMBED_BACKGROUND": [
             "#282828",
@@ -113,8 +113,8 @@
             "#ebdbb2"
         ],
         "BG_BASE_TERTIARY": [
-            "#0d1011",
-            "#f9f5d7"
+            "#282828",
+            "#ebdbb2"
         ],
         "CARD_PRIMARY_BG": [
             "#282828",
@@ -125,8 +125,8 @@
             "#d5c4a1"
         ],
         "CARD_SECONDARY_BG": [
-            "#0d1011",
-            "#f9f5d7"
+            "#282828",
+            "#ebdbb2"
         ],
         "DEPRECATED_CARD_BG": [
             "#1d2021",
@@ -141,8 +141,8 @@
             "#fbf1c7"
         ],
         "DEPRECATED_TEXT_INPUT_BG": [
-            "#0d1011",
-            "#f9f5d7"
+            "#282828",
+            "#ebdbb2"
         ],
         "DEPRECATED_TEXT_INPUT_BORDER": [
             "#3c3836",
@@ -161,8 +161,8 @@
             "#504945"
         ],
         "DEPRECATED_QUICKSWITCHER_INPUT_BACKGROUND": [
-            "#0d1011",
-            "#f9f5d7"
+            "#282828",
+            "#ebdbb2"
         ],
         "DEPRECATED_QUICKSWITCHER_INPUT_PLACEHOLDER": [
             "#928374",
@@ -181,8 +181,8 @@
             "#fbf1c7"
         ],
         "ELEVATION_STROKE": [
-            "#3c3836",
-            "#d5c4a1"
+            "#282828",
+            "#ebdbb2"
         ],
         "HEADER_PRIMARY": [
             "#fbf1c7",
@@ -317,8 +317,8 @@
             "#fbf1c7"
         ],
         "INFO_DANGER_BACKGROUND": [
-            "#0d1011",
-            "#f9f5d7"
+            "#282828",
+            "#ebdbb2"
         ],
         "INFO_DANGER_FOREGROUND": [
             "#fb4934",
@@ -329,8 +329,8 @@
             "#9d0006"
         ],
         "INFO_HELP_BACKGROUND": [
-            "#0d1011",
-            "#f9f5d7"
+            "#282828",
+            "#ebdbb2"
         ],
         "INFO_HELP_FOREGROUND": [
             "#83a598",
@@ -341,8 +341,8 @@
             "#1d2021"
         ],
         "INFO_POSITIVE_BACKGROUND": [
-            "#0d1011",
-            "#f9f5d7"
+            "#282828",
+            "#ebdbb2"
         ],
         "INFO_POSITIVE_FOREGROUND": [
             "#689d6a",
@@ -353,8 +353,8 @@
             "#1d2021"
         ],
         "INFO_WARNING_BACKGROUND": [
-            "#0d1011",
-            "#f9f5d7"
+            "#282828",
+            "#ebdbb2"
         ],
         "INFO_WARNING_FOREGROUND": [
             "#fabd2f",
@@ -413,8 +413,8 @@
             "#1d2021"
         ],
         "REDESIGN_CHAT_INPUT_BACKGROUND": [
-            "#0d1011",
-            "#f9f5d7"
+            "#282828",
+            "#ebdbb2"
         ],
         "BUG_REPORTER_MODAL_SUBMITTING_BACKGROUND": [
             "#1d2021",
@@ -438,8 +438,8 @@
         "PRIMARY_660": "#1d2021",
         "PRIMARY_700": "#1d2021",
         "PRIMARY_730": "#1d2021",
-        "PRIMARY_800": "#0d1011",
-        "PRIMARY_900": "#0d1011",
+        "PRIMARY_800": "#282828",
+        "PRIMARY_900": "#282828",
         "BRAND_230": "#fabd2f",
         "BRAND_260": "#fabd2f",
         "BRAND_300": "#d79921",
@@ -459,12 +459,12 @@
         "PLUM_14": "#504945",
         "PLUM_15": "#3c3836",
         "PLUM_16": "#282828",
-        "PLUM_17": "#0d1011",
+        "PLUM_17": "#282828",
         "PLUM_18": "#282828",
         "PLUM_19": "#282828",
         "PLUM_20": "#1d2021",
         "PLUM_21": "#1d2021",
-        "PLUM_22": "#0d1011",
+        "PLUM_22": "#282828",
         "GREEN_100": "#689d6a",
         "GREEN_130": "#689d6a",
         "GREEN_160": "#689d6a",
