@@ -37,7 +37,7 @@
             "#d3c6aa"
         ],
         "BACKGROUND_MOBILE_PRIMARY": [
-            "#1e2326",
+            "#272e33",
             "#d3c6aa"
         ],
         "BACKGROUND_MOBILE_SECONDARY": [
@@ -57,8 +57,8 @@
             "#d3c6aa"
         ],
         "INPUT_BACKGROUND": [
-            "#272e33",
-            "#d3c6aa"
+            "#1a2124",
+            "#c8c0aa"
         ],
         "EMBED_BACKGROUND": [
             "#272e33",
@@ -69,8 +69,8 @@
             "#d3c6aa"
         ],
         "CHANNELTEXTAREA_BACKGROUND": [
-            "#1e2326",
-            "#d3c6aa"
+            "#1a2124",
+            "#c8c0aa"
         ],
         "BACKGROUND_ACCENT": [
             "#dbbc7f",
@@ -105,7 +105,7 @@
             "#b9c0ab"
         ],
         "BG_BASE_PRIMARY": [
-            "#1e2326",
+            "#272e33",
             "#d3c6aa"
         ],
         "BG_BASE_SECONDARY": [
@@ -141,8 +141,8 @@
             "#d3c6aa"
         ],
         "DEPRECATED_TEXT_INPUT_BG": [
-            "#272e33",
-            "#d3c6aa"
+            "#1a2124",
+            "#c8c0aa"
         ],
         "DEPRECATED_TEXT_INPUT_BORDER": [
             "#2e383c",
@@ -161,8 +161,8 @@
             "#374145"
         ],
         "DEPRECATED_QUICKSWITCHER_INPUT_BACKGROUND": [
-            "#272e33",
-            "#d3c6aa"
+            "#1a2124",
+            "#c8c0aa"
         ],
         "DEPRECATED_QUICKSWITCHER_INPUT_PLACEHOLDER": [
             "#7a8478",
@@ -413,8 +413,8 @@
             "#1e2326"
         ],
         "REDESIGN_CHAT_INPUT_BACKGROUND": [
-            "#272e33",
-            "#d3c6aa"
+            "#1a2124",
+            "#c8c0aa"
         ],
         "BUG_REPORTER_MODAL_SUBMITTING_BACKGROUND": [
             "#1e2326",
