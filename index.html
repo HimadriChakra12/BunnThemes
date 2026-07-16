@@ -1,0 +1,427 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BunnThemes</title>
+<style>
+  :root {
+    --bg0: #1d2021;
+    --bg1: #282828;
+    --bg2: #3c3836;
+    --fg0: #fbf1c7;
+    --fg1: #ebdbb2;
+    --fg-muted: #928374;
+    --accent: #d79921;
+    --accent-dim: #b16286;
+    --mono: "JetBrains Mono", "Fira Code", ui-monospace, SFMono-Regular, Consolas, monospace;
+  }
+  * { box-sizing: border-box; }
+  body {
+    margin: 0;
+    padding: 2.5rem 1.25rem 5rem;
+    background: var(--bg0);
+    color: var(--fg1);
+    font-family: var(--mono);
+    line-height: 1.5;
+  }
+  header {
+    max-width: 720px;
+    margin: 0 auto 2.5rem;
+  }
+  header h1 {
+    margin: 0 0 0.35rem;
+    color: var(--fg0);
+    font-size: 1.4rem;
+    letter-spacing: 0.02em;
+  }
+  header p {
+    margin: 0;
+    color: var(--fg-muted);
+    font-size: 0.85rem;
+  }
+  main {
+    max-width: 720px;
+    margin: 0 auto;
+  }
+  .theme-block {
+    margin-bottom: 1.75rem;
+  }
+  .theme-heading {
+    margin: 0 0 0.5rem;
+    font-size: 0.95rem;
+    font-weight: 600;
+    color: var(--accent);
+  }
+  .file-list {
+    list-style: none;
+    margin: 0;
+    padding: 0;
+    border: 1px solid var(--bg2);
+    border-radius: 6px;
+    overflow: hidden;
+  }
+  .file-row {
+    display: flex;
+    align-items: baseline;
+    gap: 0.75rem;
+    padding: 0.5rem 0.85rem;
+    cursor: pointer;
+    background: var(--bg1);
+    border-bottom: 1px solid var(--bg2);
+    position: relative;
+    transition: background 0.12s ease;
+  }
+  .file-row:last-child { border-bottom: none; }
+  .file-row:hover, .file-row:focus {
+    background: var(--bg2);
+    outline: none;
+  }
+  .file-row:active {
+    background: #4a4238;
+  }
+  .file-path {
+    color: var(--fg-muted);
+    font-size: 0.82rem;
+  }
+  .file-name {
+    color: var(--fg1);
+    font-size: 0.85rem;
+  }
+  .copied-tag {
+    position: absolute;
+    right: 0.85rem;
+    top: 50%;
+    transform: translateY(-50%) translateX(6px);
+    font-size: 0.72rem;
+    color: var(--bg0);
+    background: var(--accent);
+    padding: 0.1rem 0.45rem;
+    border-radius: 4px;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity 0.15s ease, transform 0.15s ease;
+  }
+  .file-row.copied .copied-tag {
+    opacity: 1;
+    transform: translateY(-50%) translateX(0);
+  }
+  footer {
+    max-width: 720px;
+    margin: 3rem auto 0;
+    color: var(--fg-muted);
+    font-size: 0.75rem;
+    text-align: center;
+  }
+  footer a { color: var(--accent-dim); }
+</style>
+</head>
+<body>
+<header>
+  <h1>BunnThemes</h1>
+  <p>click a file to copy its raw URL and open it</p>
+</header>
+<main>
+
+    <section class="theme-block">
+      <h5 class="theme-heading">~/BlueVen</h5>
+      <ul class="file-list">
+        <li class="file-row"
+            data-raw="https://raw.githubusercontent.com/HimadriChakra12/BunnThemes/main/BlueVen/BlueVen.json"
+            data-blob="https://github.com/HimadriChakra12/BunnThemes/blob/main/BlueVen/BlueVen.json"
+            tabindex="0"
+            role="button"
+            aria-label="Copy URL and open ./BlueVen.json">
+          <span class="file-path">./BlueVen.json</span>
+          <span class="file-name">BlueVen</span>
+          <span class="copied-tag">copied!</span>
+        </li>
+      </ul>
+    </section>
+
+    <section class="theme-block">
+      <h5 class="theme-heading">~/ClearVision</h5>
+      <ul class="file-list">
+        <li class="file-row"
+            data-raw="https://raw.githubusercontent.com/HimadriChakra12/BunnThemes/main/ClearVision/ClearVision.json"
+            data-blob="https://github.com/HimadriChakra12/BunnThemes/blob/main/ClearVision/ClearVision.json"
+            tabindex="0"
+            role="button"
+            aria-label="Copy URL and open ./ClearVision.json">
+          <span class="file-path">./ClearVision.json</span>
+          <span class="file-name">ClearVision v1.2.6</span>
+          <span class="copied-tag">copied!</span>
+        </li>
+      </ul>
+    </section>
+
+    <section class="theme-block">
+      <h5 class="theme-heading">~/GruvYellow</h5>
+      <ul class="file-list">
+        <li class="file-row"
+            data-raw="https://raw.githubusercontent.com/HimadriChakra12/BunnThemes/main/GruvYellow/CreamYellow.json"
+            data-blob="https://github.com/HimadriChakra12/BunnThemes/blob/main/GruvYellow/CreamYellow.json"
+            tabindex="0"
+            role="button"
+            aria-label="Copy URL and open ./CreamYellow.json">
+          <span class="file-path">./CreamYellow.json</span>
+          <span class="file-name">Cream Yellow v1.3.4</span>
+          <span class="copied-tag">copied!</span>
+        </li>
+        <li class="file-row"
+            data-raw="https://raw.githubusercontent.com/HimadriChakra12/BunnThemes/main/GruvYellow/GruvHard.json"
+            data-blob="https://github.com/HimadriChakra12/BunnThemes/blob/main/GruvYellow/GruvHard.json"
+            tabindex="0"
+            role="button"
+            aria-label="Copy URL and open ./GruvHard.json">
+          <span class="file-path">./GruvHard.json</span>
+          <span class="file-name">Gruvbox Hard</span>
+          <span class="copied-tag">copied!</span>
+        </li>
+        <li class="file-row"
+            data-raw="https://raw.githubusercontent.com/HimadriChakra12/BunnThemes/main/GruvYellow/GruvMat.json"
+            data-blob="https://github.com/HimadriChakra12/BunnThemes/blob/main/GruvYellow/GruvMat.json"
+            tabindex="0"
+            role="button"
+            aria-label="Copy URL and open ./GruvMat.json">
+          <span class="file-path">./GruvMat.json</span>
+          <span class="file-name">Gruvbox Material</span>
+          <span class="copied-tag">copied!</span>
+        </li>
+        <li class="file-row"
+            data-raw="https://raw.githubusercontent.com/HimadriChakra12/BunnThemes/main/GruvYellow/GruvSoft.json"
+            data-blob="https://github.com/HimadriChakra12/BunnThemes/blob/main/GruvYellow/GruvSoft.json"
+            tabindex="0"
+            role="button"
+            aria-label="Copy URL and open ./GruvSoft.json">
+          <span class="file-path">./GruvSoft.json</span>
+          <span class="file-name">Gruvbox Soft</span>
+          <span class="copied-tag">copied!</span>
+        </li>
+      </ul>
+    </section>
+
+    <section class="theme-block">
+      <h5 class="theme-heading">~/MediumSlateBlue</h5>
+      <ul class="file-list">
+        <li class="file-row"
+            data-raw="https://raw.githubusercontent.com/HimadriChakra12/BunnThemes/main/MediumSlateBlue/MediumSlateBlue.json"
+            data-blob="https://github.com/HimadriChakra12/BunnThemes/blob/main/MediumSlateBlue/MediumSlateBlue.json"
+            tabindex="0"
+            role="button"
+            aria-label="Copy URL and open ./MediumSlateBlue.json">
+          <span class="file-path">./MediumSlateBlue.json</span>
+          <span class="file-name">Medium Slate Blue</span>
+          <span class="copied-tag">copied!</span>
+        </li>
+      </ul>
+    </section>
+
+    <section class="theme-block">
+      <h5 class="theme-heading">~/Nord</h5>
+      <ul class="file-list">
+        <li class="file-row"
+            data-raw="https://raw.githubusercontent.com/HimadriChakra12/BunnThemes/main/Nord/nord.json"
+            data-blob="https://github.com/HimadriChakra12/BunnThemes/blob/main/Nord/nord.json"
+            tabindex="0"
+            role="button"
+            aria-label="Copy URL and open ./nord.json">
+          <span class="file-path">./nord.json</span>
+          <span class="file-name">Nord</span>
+          <span class="copied-tag">copied!</span>
+        </li>
+      </ul>
+    </section>
+
+    <section class="theme-block">
+      <h5 class="theme-heading">~/PurpAMOLED</h5>
+      <ul class="file-list">
+        <li class="file-row"
+            data-raw="https://raw.githubusercontent.com/HimadriChakra12/BunnThemes/main/PurpAMOLED/PurpAMOLED.json"
+            data-blob="https://github.com/HimadriChakra12/BunnThemes/blob/main/PurpAMOLED/PurpAMOLED.json"
+            tabindex="0"
+            role="button"
+            aria-label="Copy URL and open ./PurpAMOLED.json">
+          <span class="file-path">./PurpAMOLED.json</span>
+          <span class="file-name">PurpAMOLED</span>
+          <span class="copied-tag">copied!</span>
+        </li>
+      </ul>
+    </section>
+
+    <section class="theme-block">
+      <h5 class="theme-heading">~/Purpdark</h5>
+      <ul class="file-list">
+        <li class="file-row"
+            data-raw="https://raw.githubusercontent.com/HimadriChakra12/BunnThemes/main/Purpdark/PurpDark_BG/Purpdark_v3.json"
+            data-blob="https://github.com/HimadriChakra12/BunnThemes/blob/main/Purpdark/PurpDark_BG/Purpdark_v3.json"
+            tabindex="0"
+            role="button"
+            aria-label="Copy URL and open ./PurpDark_BG/Purpdark_v3.json">
+          <span class="file-path">./PurpDark_BG/Purpdark_v3.json</span>
+          <span class="file-name">PurpDark V3</span>
+          <span class="copied-tag">copied!</span>
+        </li>
+        <li class="file-row"
+            data-raw="https://raw.githubusercontent.com/HimadriChakra12/BunnThemes/main/Purpdark/Purpdark_v2.json"
+            data-blob="https://github.com/HimadriChakra12/BunnThemes/blob/main/Purpdark/Purpdark_v2.json"
+            tabindex="0"
+            role="button"
+            aria-label="Copy URL and open ./Purpdark_v2.json">
+          <span class="file-path">./Purpdark_v2.json</span>
+          <span class="file-name">PurpDark</span>
+          <span class="copied-tag">copied!</span>
+        </li>
+      </ul>
+    </section>
+
+    <section class="theme-block">
+      <h5 class="theme-heading">~/Ratio</h5>
+      <ul class="file-list">
+        <li class="file-row"
+            data-raw="https://raw.githubusercontent.com/HimadriChakra12/BunnThemes/main/Ratio/Ratio.json"
+            data-blob="https://github.com/HimadriChakra12/BunnThemes/blob/main/Ratio/Ratio.json"
+            tabindex="0"
+            role="button"
+            aria-label="Copy URL and open ./Ratio.json">
+          <span class="file-path">./Ratio.json</span>
+          <span class="file-name">Ratio v1.1.3</span>
+          <span class="copied-tag">copied!</span>
+        </li>
+        <li class="file-row"
+            data-raw="https://raw.githubusercontent.com/HimadriChakra12/BunnThemes/main/Ratio/RatioRedesigned.json"
+            data-blob="https://github.com/HimadriChakra12/BunnThemes/blob/main/Ratio/RatioRedesigned.json"
+            tabindex="0"
+            role="button"
+            aria-label="Copy URL and open ./RatioRedesigned.json">
+          <span class="file-path">./RatioRedesigned.json</span>
+          <span class="file-name">Ratio Redesigned v1.1.3 </span>
+          <span class="copied-tag">copied!</span>
+        </li>
+      </ul>
+    </section>
+
+    <section class="theme-block">
+      <h5 class="theme-heading">~/RedFeathers</h5>
+      <ul class="file-list">
+        <li class="file-row"
+            data-raw="https://raw.githubusercontent.com/HimadriChakra12/BunnThemes/main/RedFeathers/redfeathers-nobg.json"
+            data-blob="https://github.com/HimadriChakra12/BunnThemes/blob/main/RedFeathers/redfeathers-nobg.json"
+            tabindex="0"
+            role="button"
+            aria-label="Copy URL and open ./redfeathers-nobg.json">
+          <span class="file-path">./redfeathers-nobg.json</span>
+          <span class="file-name">Red Feathers</span>
+          <span class="copied-tag">copied!</span>
+        </li>
+        <li class="file-row"
+            data-raw="https://raw.githubusercontent.com/HimadriChakra12/BunnThemes/main/RedFeathers/redfeathers.json"
+            data-blob="https://github.com/HimadriChakra12/BunnThemes/blob/main/RedFeathers/redfeathers.json"
+            tabindex="0"
+            role="button"
+            aria-label="Copy URL and open ./redfeathers.json">
+          <span class="file-path">./redfeathers.json</span>
+          <span class="file-name">Red Feathers</span>
+          <span class="copied-tag">copied!</span>
+        </li>
+      </ul>
+    </section>
+
+    <section class="theme-block">
+      <h5 class="theme-heading">~/ScarletLove</h5>
+      <ul class="file-list">
+        <li class="file-row"
+            data-raw="https://raw.githubusercontent.com/HimadriChakra12/BunnThemes/main/ScarletLove/ScarletLove.json"
+            data-blob="https://github.com/HimadriChakra12/BunnThemes/blob/main/ScarletLove/ScarletLove.json"
+            tabindex="0"
+            role="button"
+            aria-label="Copy URL and open ./ScarletLove.json">
+          <span class="file-path">./ScarletLove.json</span>
+          <span class="file-name">Scarlet Love v1.0.5 </span>
+          <span class="copied-tag">copied!</span>
+        </li>
+      </ul>
+    </section>
+
+    <section class="theme-block">
+      <h5 class="theme-heading">~/SeaGreen</h5>
+      <ul class="file-list">
+        <li class="file-row"
+            data-raw="https://raw.githubusercontent.com/HimadriChakra12/BunnThemes/main/SeaGreen/SeaGreen.json"
+            data-blob="https://github.com/HimadriChakra12/BunnThemes/blob/main/SeaGreen/SeaGreen.json"
+            tabindex="0"
+            role="button"
+            aria-label="Copy URL and open ./SeaGreen.json">
+          <span class="file-path">./SeaGreen.json</span>
+          <span class="file-name">Sea Green</span>
+          <span class="copied-tag">copied!</span>
+        </li>
+      </ul>
+    </section>
+
+    <section class="theme-block">
+      <h5 class="theme-heading">~/VendettaTeal</h5>
+      <ul class="file-list">
+        <li class="file-row"
+            data-raw="https://raw.githubusercontent.com/HimadriChakra12/BunnThemes/main/VendettaTeal/AMOLED.json"
+            data-blob="https://github.com/HimadriChakra12/BunnThemes/blob/main/VendettaTeal/AMOLED.json"
+            tabindex="0"
+            role="button"
+            aria-label="Copy URL and open ./AMOLED.json">
+          <span class="file-path">./AMOLED.json</span>
+          <span class="file-name">Vendetta Teal v1.2.3</span>
+          <span class="copied-tag">copied!</span>
+        </li>
+      </ul>
+    </section>
+</main>
+<footer>
+  auto-generated by <a href="https://github.com/HimadriChakra12/BunnThemes/blob/main/scripts/generate_site.py">generate_site.py</a> &middot;
+  <a href="https://github.com/HimadriChakra12/BunnThemes">source</a>
+</footer>
+<script>
+  function copyUrl(url) {
+    if (navigator.clipboard && navigator.clipboard.writeText) {
+      navigator.clipboard.writeText(url).catch(function () {
+        fallbackCopy(url);
+      });
+    } else {
+      fallbackCopy(url);
+    }
+  }
+
+  function fallbackCopy(url) {
+    var ta = document.createElement("textarea");
+    ta.value = url;
+    ta.style.position = "fixed";
+    ta.style.opacity = "0";
+    document.body.appendChild(ta);
+    ta.select();
+    try { document.execCommand("copy"); } catch (e) {}
+    document.body.removeChild(ta);
+  }
+
+  function openFile(url) {
+    window.open(url, "_blank", "noopener");
+  }
+
+  document.querySelectorAll(".file-row").forEach(function (row) {
+    function trigger() {
+      var rawUrl = row.getAttribute("data-raw");
+      var blobUrl = row.getAttribute("data-blob");
+      copyUrl(rawUrl);
+      openFile(blobUrl);
+      row.classList.add("copied");
+      setTimeout(function () { row.classList.remove("copied"); }, 1200);
+    }
+    row.addEventListener("click", trigger);
+    row.addEventListener("keydown", function (e) {
+      if (e.key === "Enter" || e.key === " ") {
+        e.preventDefault();
+        trigger();
+      }
+    });
+  });
+</script>
+</body>
+</html>

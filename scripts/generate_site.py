@@ -24,12 +24,11 @@ from html import escape
 # ---- config ---------------------------------------------------------------
 
 REPO_ROOT = Path(__file__).resolve().parent.parent
-OUTPUT_DIR = REPO_ROOT / "site"
-OUTPUT_FILE = OUTPUT_DIR / "index.html"
+OUTPUT_FILE = REPO_ROOT / "index.html"
 
 # Folders at repo root that are NOT theme folders
 IGNORE_DIRS = {
-    "Asset", ".github", ".git", "scripts", "site", "node_modules",
+    "Asset", ".github", ".git", "scripts", "node_modules",
 }
 
 GITHUB_USER = os.environ.get("GITHUB_REPOSITORY_OWNER", "HimadriChakra12")
@@ -281,7 +280,6 @@ def render(folders):
 
 
 def main():
-    OUTPUT_DIR.mkdir(parents=True, exist_ok=True)
     folders = find_theme_folders()
     html = render(folders)
     OUTPUT_FILE.write_text(html, encoding="utf-8")
