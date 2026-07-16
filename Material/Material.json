@@ -72,7 +72,7 @@
             "#ebedef"
         ],
         "BACKGROUND_ACCENT": [
-            "#899de7",
+            "#535edf",
             "#535edf"
         ],
         "BACKGROUND_MENTIONED": [
@@ -88,16 +88,16 @@
             "#00000008"
         ],
         "BACKGROUND_MODIFIER_ACCENT": [
-            "#ffffff0f",
-            "#0000000f"
+            "#ffffff12",
+            "#00000012"
         ],
         "BACKGROUND_MODIFIER_ACTIVE": [
-            "#ffffff14",
-            "#00000014"
+            "#252f5466",
+            "#00000018"
         ],
         "BACKGROUND_MODIFIER_HOVER": [
-            "#ffffff0a",
-            "#0000000a"
+            "#ffffff0d",
+            "#0000000d"
         ],
         "BACKGROUND_MODIFIER_SELECTED": [
             "#252f54",
@@ -128,7 +128,7 @@
             "#ebedef"
         ],
         "DEPRECATED_CARD_BG": [
-            "#202128",
+            "#101117",
             "#f2f3f5"
         ],
         "DEPRECATED_CARD_EDITABLE_BG": [
@@ -269,7 +269,7 @@
         ],
         "FOCUS_PRIMARY": [
             "#899de7",
-            "#535edf"
+            "#899de7"
         ],
         "GUILD_HEADER_TEXT_SHADOW": [
             "#0b0c10",
@@ -466,20 +466,20 @@
         "PRIMARY_500": "#5e6373",
         "PRIMARY_530": "#4a4e5c",
         "PRIMARY_560": "#3a3d4a",
-        "PRIMARY_600": "#2a2d38",
+        "PRIMARY_600": "#202128",
         "PRIMARY_630": "#202128",
         "PRIMARY_660": "#1a1d28",
-        "PRIMARY_700": "#14161f",
+        "PRIMARY_700": "#101117",
         "PRIMARY_730": "#101117",
         "PRIMARY_800": "#0b0c10",
         "PRIMARY_900": "#07080c",
         "PLUM_3": "#ffffff",
         "PLUM_4": "#899de7",
         "PLUM_6": "#dcddde",
-        "PLUM_9": "#b9bbbe",
+        "PLUM_9": "#9096ac",
         "PLUM_10": "#9096ac",
         "PLUM_11": "#9096ac",
-        "PLUM_13": "#9096ac",
+        "PLUM_13": "#7d8391",
         "PLUM_14": "#5e6373",
         "PLUM_15": "#3a3d4a",
         "PLUM_16": "#202128",
@@ -570,7 +570,19 @@
         "GUILD_BOOSTING_BLUE_FOR_GRADIENTS": "#535edf",
         "GUILD_BOOSTING_PINK": "#f57731",
         "GUILD_BOOSTING_PURPLE": "#b48ead",
-        "GUILD_BOOSTING_PURPLE_FOR_GRADIENTS": "#b48ead"
+        "GUILD_BOOSTING_PURPLE_FOR_GRADIENTS": "#b48ead",
+        "PRIMARY_160": "#e3e5e8",
+        "PRIMARY_260": "#b9bbbe",
+        "PRIMARY_330": "#9096ac",
+        "PRIMARY_860": "#07080c",
+        "PLUM_5": "#dcddde",
+        "PLUM_7": "#b9bbbe",
+        "PLUM_8": "#b9bbbe",
+        "PLUM_12": "#7d8391",
+        "BLACK_860": "#101117",
+        "BLACK_900": "#101117",
+        "BRAND_760": "#1e2353",
+        "BRAND_800": "#181c42"
     },
     "plus": {
         "version": "0",
