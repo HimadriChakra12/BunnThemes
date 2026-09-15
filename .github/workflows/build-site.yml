@@ -6,7 +6,6 @@ on:
     paths:
       - "**/*.json"
       - "scripts/generate_site.py"
-      - "create.html"
       - ".github/workflows/build-site.yml"
   workflow_dispatch: {}
 
@@ -21,7 +20,7 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  # ─── Step 1: rebuild index.html from the theme JSON files ───
+  # ─── Step 1: splice the theme listing into index.html from the theme JSON files ───
   build-and-commit:
     runs-on: ubuntu-latest
     steps:
@@ -35,7 +34,7 @@ jobs:
         with:
           python-version: "3.x"
 
-      - name: Regenerate theme listing (index.html)
+      - name: Splice theme listing into index.html
         env:
           GITHUB_REPO_NAME: ${{ github.event.repository.name }}
           GITHUB_DEFAULT_BRANCH: ${{ github.event.repository.default_branch }}
@@ -53,7 +52,7 @@ jobs:
             git push
           fi
 
-  # ─── Step 2: deploy everything (index + creator) to GitHub Pages ───
+  # ─── Step 2: deploy the site (index.html + assets) to GitHub Pages ───
   deploy-pages:
     needs: build-and-commit
     runs-on: ubuntu-latest
@@ -73,7 +72,7 @@ jobs:
       - name: Upload site artifact
         uses: actions/upload-pages-artifact@v3
         with:
-          # Serve the whole repo root — index.html + create.html + assets
+          # Serve the whole repo root — index.html (Creator + Browse) + assets
           path: "."
 
       - name: Deploy to GitHub Pages
