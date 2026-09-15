@@ -190,6 +190,54 @@ details.fallback summary:hover{color:var(--fg2)}
 .steps li p strong{color:var(--fg1)}
 .steps a{color:var(--accent)}
 
+/* preview tab */
+.preview-cats{
+  display:flex;gap:.4rem;flex-wrap:wrap;margin-bottom:1.1rem;
+}
+.preview-cat{
+  background:var(--bg1);border:1px solid var(--bg2);border-radius:20px;
+  color:var(--fg2);font-size:.74rem;padding:.28rem .75rem;cursor:pointer;
+  transition:border-color .12s,color .12s;white-space:nowrap;font:inherit;
+}
+.preview-cat:hover{border-color:var(--accent);color:var(--accent)}
+.preview-cat.active{border-color:var(--accent);color:var(--accent);background:var(--bg2);font-weight:600}
+.preview-frame{
+  border:1px solid var(--bg2);border-radius:10px;overflow:hidden;
+  max-width:420px;font-family:var(--sans);
+}
+.pv-header{display:flex;align-items:center;gap:.6rem;padding:.65rem .9rem;font-size:.85rem;font-weight:700}
+.pv-sub{font-size:.7rem;font-weight:400;opacity:.75}
+.pv-body{padding:.75rem .9rem}
+.pv-row{
+  display:flex;align-items:center;gap:.65rem;padding:.6rem .7rem;border-radius:8px;margin-bottom:.4rem;
+}
+.pv-row-label{flex:1;font-size:.8rem}
+.pv-row-value{font-size:.75rem}
+.pv-section-title{font-size:.68rem;text-transform:uppercase;letter-spacing:.06em;margin:.9rem 0 .4rem;opacity:.7}
+.pv-toggle{width:34px;height:19px;border-radius:10px;position:relative;flex-shrink:0}
+.pv-toggle::after{content:'';position:absolute;top:2px;right:2px;width:15px;height:15px;border-radius:50%;background:#fff}
+.pv-toggle.off{background:var(--bg3) !important}
+.pv-toggle.off::after{left:2px;right:auto;background:#fff8}
+.pv-radio{width:17px;height:17px;border-radius:50%;border:2px solid;flex-shrink:0;position:relative}
+.pv-radio.on::after{content:'';position:absolute;inset:3px;border-radius:50%}
+.pv-chip{font-size:.68rem;padding:.1rem .5rem;border-radius:10px;font-weight:600}
+.pv-msg{margin-bottom:.7rem}
+.pv-msg-name{font-size:.78rem;font-weight:700;margin-bottom:.1rem}
+.pv-msg-text{font-size:.8rem;line-height:1.5}
+.pv-link{text-decoration:underline}
+.pv-tabs-inline{display:flex;gap:1rem;margin-bottom:.7rem;font-size:.78rem}
+.pv-tab-inline{padding-bottom:.35rem;border-bottom:2px solid transparent}
+.pv-card{border-radius:9px;padding:.7rem .8rem;margin-bottom:.6rem}
+.pv-badge{font-size:.65rem;padding:.08rem .45rem;border-radius:8px;margin-right:.3rem}
+.pv-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:.3rem}
+.pv-grid div{aspect-ratio:1;border-radius:5px}
+.pv-sidebar-layout{display:flex}
+.pv-rail{width:52px;flex-shrink:0;display:flex;flex-direction:column;align-items:center;padding:.5rem 0;gap:.5rem}
+.pv-rail-icon{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.7rem;font-weight:700}
+.pv-channels{flex:1;padding:.5rem .6rem;min-width:0}
+.pv-cat-label{font-size:.62rem;text-transform:uppercase;letter-spacing:.05em;margin:.5rem 0 .2rem;opacity:.6}
+.pv-ch-row{font-size:.78rem;padding:.25rem .4rem;border-radius:5px;margin-bottom:.1rem}
+
 /* browse view (reused from index.html) */
 #view-browse{padding:2rem 1.25rem 5rem}
 #view-browse header{max-width:720px;margin:0 auto 2rem}
@@ -245,6 +293,7 @@ details.fallback summary:hover{color:var(--fg2)}
   <!-- sub tabs -->
   <div class="sub-tabs">
     <button class="sub-tab active" data-subtab="build" onclick="switchSubTab('build')">Build</button>
+    <button class="sub-tab" data-subtab="preview" onclick="switchSubTab('preview')">Preview</button>
     <button class="sub-tab" data-subtab="submit" onclick="switchSubTab('submit')">Submit</button>
   </div>
 
@@ -291,6 +340,13 @@ details.fallback summary:hover{color:var(--fg2)}
         <pre class="json-out" id="json-out"></pre>
         <button class="copy-btn" onclick="copyJson()">Copy</button>
       </div>
+    </div>
+
+    <!-- PREVIEW panel -->
+    <div id="tab-preview" style="display:none">
+      <div class="notice">Rough mockups, not pixel-perfect — just enough to sanity-check every area uses your colors correctly.</div>
+      <div class="preview-cats" id="preview-cats"><!-- filled by JS --></div>
+      <div class="preview-frame" id="preview-frame"><!-- filled by JS --></div>
     </div>
 
     <!-- SUBMIT panel -->
@@ -686,10 +742,12 @@ function switchTopTab(tab) {
 
 function switchSubTab(tab) {
   document.querySelectorAll('.sub-tab').forEach(b => b.classList.toggle('active', b.dataset.subtab === tab));
-  document.getElementById('tab-build').style.display  = tab === 'build'  ? '' : 'none';
-  document.getElementById('tab-submit').style.display = tab === 'submit' ? '' : 'none';
-  document.getElementById('preset-row').style.display = tab === 'build' ? '' : 'none';
+  document.getElementById('tab-build').style.display   = tab === 'build'   ? '' : 'none';
+  document.getElementById('tab-preview').style.display = tab === 'preview' ? '' : 'none';
+  document.getElementById('tab-submit').style.display  = tab === 'submit'  ? '' : 'none';
+  document.getElementById('preset-row').style.display  = tab === 'submit' ? 'none' : '';
   if (tab === 'submit') updateSubmitCard();
+  if (tab === 'preview') renderPreviewBody();
 }
 
 // ═══════════════════════════════════════════════
@@ -801,6 +859,7 @@ function setColor(key, val) {
   activePreset = null;
   document.querySelectorAll('[id^=pill-]').forEach(p => p.classList.remove('active'));
   refreshJsonOutput();
+  refreshPreviewIfOpen();
 }
 
 // ═══════════════════════════════════════════════
@@ -814,6 +873,7 @@ function applyPreset(name) {
   const pill = document.getElementById('pill-' + name);
   if (pill) pill.classList.add('active');
   renderColorsBody();
+  refreshPreviewIfOpen();
 }
 
 // ═══════════════════════════════════════════════
@@ -824,6 +884,7 @@ function setMode(m) {
   document.getElementById('mt-dark').classList.toggle('active', m==='dark');
   document.getElementById('mt-light').classList.toggle('active', m==='light');
   renderColorsBody();
+  refreshPreviewIfOpen();
 }
 
 // ═══════════════════════════════════════════════
@@ -831,6 +892,7 @@ function setMode(m) {
 // ═══════════════════════════════════════════════
 function syncMeta() {
   refreshJsonOutput();
+  refreshPreviewIfOpen();
 }
 function autoFolder() {
   const name = document.getElementById('meta-name')?.value.trim()||'';
@@ -839,6 +901,232 @@ function autoFolder() {
   if (el && slug) el.value = slug;
   syncMeta();
 }
+
+// ═══════════════════════════════════════════════
+// PREVIEW — quick mockups across the app's common surfaces, just enough
+// to sanity-check every color slot looks right somewhere
+// ═══════════════════════════════════════════════
+const PREVIEW_CATS = [
+  { id:'chat',      label:'Chat' },
+  { id:'dms',       label:'DMs' },
+  { id:'sidebar',   label:'Server & Channels' },
+  { id:'search',    label:'Search' },
+  { id:'forum',     label:'Forum' },
+  { id:'accounts',  label:'Accounts' },
+  { id:'accessibility', label:'Accessibility' },
+  { id:'advanced',  label:'Advanced' },
+  { id:'themes',    label:'Themes' },
+  { id:'profile',   label:'Profile' },
+];
+let activePreviewCat = 'chat';
+
+function refreshPreviewIfOpen() {
+  if (document.getElementById('tab-preview')?.style.display !== 'none') renderPreviewBody();
+}
+
+function renderPreviewBody() {
+  const catsEl = document.getElementById('preview-cats');
+  if (catsEl && !catsEl.dataset.built) {
+    catsEl.innerHTML = PREVIEW_CATS.map(c =>
+      `<button class="preview-cat${c.id===activePreviewCat?' active':''}" id="pvc-${c.id}" onclick="switchPreviewCat('${c.id}')">${c.label}</button>`
+    ).join('');
+    catsEl.dataset.built = '1';
+  }
+  const frame = document.getElementById('preview-frame');
+  frame.style.background = C().bg_primary;
+  frame.innerHTML = PREVIEW_RENDERERS[activePreviewCat](C());
+}
+
+function switchPreviewCat(id) {
+  activePreviewCat = id;
+  document.querySelectorAll('.preview-cat').forEach(b => b.classList.toggle('active', b.id === 'pvc-' + id));
+  const frame = document.getElementById('preview-frame');
+  frame.style.background = C().bg_primary;
+  frame.innerHTML = PREVIEW_RENDERERS[id](C());
+}
+
+const PREVIEW_RENDERERS = {
+  chat: c => `
+    <div class="pv-header" style="background:${c.bg_tertiary};color:${c.header_text}"># general <span class="pv-sub" style="color:${c.fg_secondary}">3 online</span></div>
+    <div class="pv-body" style="background:${c.bg_primary}">
+      <div class="pv-msg">
+        <div class="pv-msg-name" style="color:${c.accent}">Alex</div>
+        <div class="pv-msg-text" style="color:${c.fg_primary}">just pushed the update, check the <span class="pv-link" style="color:${c.link}">changelog</span> when you get a sec</div>
+      </div>
+      <div class="pv-msg">
+        <div class="pv-msg-name" style="color:${c.link}">Sam</div>
+        <div class="pv-msg-text" style="color:${c.fg_secondary}">looks good, one thing though — build failed on CI</div>
+      </div>
+      <div class="pv-msg">
+        <div class="pv-msg-name" style="color:${c.danger}">Jordan</div>
+        <div class="pv-msg-text" style="color:${c.fg_primary}">⚠️ error in the danger color, red text should show here</div>
+      </div>
+      <div class="pv-msg">
+        <div class="pv-msg-name" style="color:${c.positive}">Riley</div>
+        <div class="pv-msg-text" style="color:${c.fg_primary}">✅ all fixed, tests passing now</div>
+      </div>
+      <div class="pv-row" style="background:${c.input_bg};color:${c.fg_secondary}88;margin-top:.5rem">Message #general</div>
+    </div>`,
+
+  dms: c => `
+    <div class="pv-header" style="background:${c.bg_tertiary};color:${c.header_text}">Messages</div>
+    <div class="pv-body" style="background:${c.bg_secondary};padding:.5rem">
+      <div class="pv-row" style="background:${c.bg_primary}">
+        <div class="pv-row-label" style="color:${c.fg_primary};font-weight:700">Alex Rivera</div>
+        <div class="pv-row-value" style="color:${c.fg_secondary}">3h</div>
+      </div>
+      <div class="pv-row" style="background:${c.bg_primary}">
+        <div class="pv-row-label" style="color:${c.fg_secondary}">Sam · design-crew</div>
+        <div class="pv-row-value" style="color:${c.fg_secondary}">1d</div>
+      </div>
+      <div class="pv-row" style="background:${c.bg_primary}">
+        <div class="pv-row-label" style="color:${c.fg_secondary}">Jordan</div>
+        <div class="pv-row-value" style="color:${c.accent}">●</div>
+      </div>
+    </div>`,
+
+  sidebar: c => `
+    <div class="pv-sidebar-layout" style="background:${c.bg_tertiary}">
+      <div class="pv-rail" style="background:${c.bg_tertiary}">
+        <div class="pv-rail-icon" style="background:${c.accent};color:${c.bg_primary}">🐰</div>
+        <div class="pv-rail-icon" style="background:${c.bg_secondary};color:${c.fg_secondary}">S</div>
+        <div class="pv-rail-icon" style="background:${c.bg_secondary};color:${c.fg_secondary}">G</div>
+      </div>
+      <div class="pv-channels" style="background:${c.bg_secondary}">
+        <div class="pv-cat-label" style="color:${c.fg_secondary}">Study</div>
+        <div class="pv-ch-row" style="background:${c.accent}22;color:${c.fg_primary}"># general-chat</div>
+        <div class="pv-ch-row" style="color:${c.fg_secondary}"># resources</div>
+        <div class="pv-ch-row" style="color:${c.fg_secondary}">🔊 voice-lounge</div>
+        <div class="pv-cat-label" style="color:${c.fg_secondary}">Off Topic</div>
+        <div class="pv-ch-row" style="color:${c.fg_secondary}"># memes</div>
+      </div>
+    </div>`,
+
+  search: c => `
+    <div class="pv-header" style="background:${c.bg_tertiary};color:${c.header_text}">Search in Server</div>
+    <div class="pv-body" style="background:${c.bg_primary}">
+      <div class="pv-tabs-inline">
+        <span class="pv-tab-inline" style="color:${c.accent};border-color:${c.accent};font-weight:700">Recent</span>
+        <span class="pv-tab-inline" style="color:${c.fg_secondary}">Members</span>
+        <span class="pv-tab-inline" style="color:${c.fg_secondary}">Media</span>
+        <span class="pv-tab-inline" style="color:${c.fg_secondary}">Links</span>
+      </div>
+      <div class="pv-row" style="background:${c.bg_secondary};color:${c.fg_primary}"># resources <span style="color:${c.fg_secondary};margin-left:auto;font-size:.7rem">active 3h ago</span></div>
+      <div class="pv-row" style="background:${c.bg_secondary};color:${c.fg_primary}"># general <span style="color:${c.fg_secondary};margin-left:auto;font-size:.7rem">active 1d ago</span></div>
+      <div class="pv-grid" style="margin-top:.5rem">
+        <div style="background:${c.bg_tertiary}"></div><div style="background:${c.bg_secondary}"></div><div style="background:${c.accent}55"></div>
+      </div>
+    </div>`,
+
+  forum: c => `
+    <div class="pv-header" style="background:${c.bg_tertiary};color:${c.header_text}">resources-forum</div>
+    <div class="pv-body" style="background:${c.bg_primary}">
+      <div class="pv-card" style="background:${c.bg_secondary}">
+        <span class="pv-badge" style="background:${c.bg_tertiary};color:${c.fg_secondary}">Guide</span>
+        <span class="pv-badge" style="background:${c.bg_tertiary};color:${c.fg_secondary}">+2</span>
+        <div style="color:${c.accent};font-size:.82rem;font-weight:700;margin-top:.4rem">Getting started resources</div>
+        <div style="color:${c.fg_secondary};font-size:.76rem;margin-top:.15rem">A running list of useful links and guides for newcomers...</div>
+        <div style="color:${c.fg_secondary};font-size:.72rem;margin-top:.4rem">💬 22 &nbsp; 🔥 2</div>
+      </div>
+      <div class="pv-card" style="background:${c.bg_secondary}">
+        <span class="pv-badge" style="background:${c.bg_tertiary};color:${c.fg_secondary}">English</span>
+        <div style="color:${c.link};font-size:.82rem;font-weight:700;margin-top:.4rem">Formatting tips thread</div>
+        <div style="color:${c.fg_secondary};font-size:.72rem;margin-top:.4rem">💬 7</div>
+      </div>
+    </div>`,
+
+  accounts: c => `
+    <div class="pv-header" style="background:${c.bg_tertiary};color:${c.header_text}">Account Settings</div>
+    <div class="pv-body" style="background:${c.bg_primary}">
+      <div class="pv-section-title" style="color:${c.fg_secondary}">Account Information</div>
+      <div class="pv-row" style="background:${c.bg_secondary}">
+        <div class="pv-row-label" style="color:${c.fg_primary}">Username</div>
+        <div class="pv-row-value" style="color:${c.fg_secondary}">›</div>
+      </div>
+      <div class="pv-row" style="background:${c.bg_secondary}">
+        <div class="pv-row-label" style="color:${c.fg_primary}">Display Name</div>
+        <div class="pv-row-value" style="color:${c.fg_secondary}">›</div>
+      </div>
+      <div class="pv-row" style="background:${c.bg_secondary}">
+        <div class="pv-row-label" style="color:${c.fg_primary}">Password</div>
+        <div class="pv-row-value" style="color:${c.fg_secondary}">›</div>
+      </div>
+      <div class="pv-row" style="background:${c.accent}18;border:1px solid ${c.accent}">
+        <div class="pv-row-label" style="color:${c.accent};font-weight:700">Get started with passkeys</div>
+      </div>
+    </div>`,
+
+  accessibility: c => `
+    <div class="pv-header" style="background:${c.bg_tertiary};color:${c.header_text}">Accessibility</div>
+    <div class="pv-body" style="background:${c.bg_primary}">
+      <div class="pv-section-title" style="color:${c.fg_secondary}">Role Colors</div>
+      <div class="pv-row" style="background:${c.bg_secondary}">
+        <div class="pv-radio on" style="border-color:${c.accent}"></div>
+        <div class="pv-row-label" style="color:${c.fg_primary}">Show role colors in names</div>
+      </div>
+      <div class="pv-row" style="background:${c.bg_secondary}">
+        <div class="pv-radio" style="border-color:${c.fg_secondary}"></div>
+        <div class="pv-row-label" style="color:${c.fg_primary}">Don't show role colors</div>
+      </div>
+      <div class="pv-section-title" style="color:${c.fg_secondary}">Display Name Styles</div>
+      <div class="pv-row" style="background:${c.bg_secondary}">
+        <div class="pv-row-label" style="color:${c.fg_primary}">Enabled</div>
+        <div class="pv-toggle" style="background:${c.accent}"></div>
+      </div>
+    </div>`,
+
+  advanced: c => `
+    <div class="pv-header" style="background:${c.bg_tertiary};color:${c.header_text}">Advanced</div>
+    <div class="pv-body" style="background:${c.bg_primary}">
+      <div class="pv-row" style="background:${c.bg_secondary}">
+        <div class="pv-row-label" style="color:${c.fg_primary}">Developer Mode</div>
+        <div class="pv-toggle" style="background:${c.accent}"></div>
+      </div>
+      <div class="pv-section-title" style="color:${c.fg_secondary}">LaunchPad</div>
+      <div class="pv-row" style="background:${c.bg_secondary}">
+        <div class="pv-radio on" style="border-color:${c.accent}"></div>
+        <div class="pv-row-label" style="color:${c.fg_primary}">Full Screen Gesture</div>
+      </div>
+      <div class="pv-row" style="background:${c.bg_secondary}">
+        <div class="pv-radio" style="border-color:${c.fg_secondary}"></div>
+        <div class="pv-row-label" style="color:${c.fg_primary}">Disabled</div>
+      </div>
+    </div>`,
+
+  themes: c => `
+    <div class="pv-header" style="background:${c.bg_tertiary};color:${c.header_text}">Themes</div>
+    <div class="pv-body" style="background:${c.bg_primary}">
+      <div class="pv-card" style="background:${c.bg_secondary};display:flex;align-items:center;gap:.6rem">
+        <div style="flex:1">
+          <div style="color:${c.fg_primary};font-weight:700;font-size:.82rem">${esc(document.getElementById('meta-name')?.value.trim() || 'My Theme')}</div>
+          <div style="color:${c.fg_secondary};font-size:.72rem">by ${esc(document.getElementById('meta-author')?.value.trim() || 'Anonymous')}</div>
+        </div>
+        <div class="pv-radio on" style="border-color:${c.accent}"></div>
+      </div>
+      <div class="pv-card" style="background:${c.bg_secondary};display:flex;align-items:center;gap:.6rem;opacity:.6">
+        <div style="flex:1;color:${c.fg_secondary};font-size:.8rem">Another theme</div>
+        <div class="pv-radio" style="border-color:${c.fg_secondary}"></div>
+      </div>
+    </div>`,
+
+  profile: c => `
+    <div class="pv-header" style="background:${c.bg_tertiary};color:${c.header_text}">Profile</div>
+    <div class="pv-body" style="background:${c.bg_primary}">
+      <div style="color:${c.fg_primary};font-weight:700;font-size:.95rem">Display Name</div>
+      <div style="color:${c.fg_secondary};font-size:.75rem;margin-bottom:.6rem">username</div>
+      <div class="pv-row" style="background:${c.accent};justify-content:center">
+        <span style="color:${c.bg_primary};font-weight:700;font-size:.8rem">Edit Profile</span>
+      </div>
+      <div class="pv-tabs-inline" style="margin-top:.7rem">
+        <span class="pv-tab-inline" style="color:${c.accent};border-color:${c.accent};font-weight:700">Main</span>
+        <span class="pv-tab-inline" style="color:${c.fg_secondary}">Wishlist</span>
+      </div>
+      <div class="pv-row" style="background:${c.bg_secondary}">
+        <div class="pv-row-label" style="color:${c.fg_primary}">Member Since</div>
+        <div class="pv-row-value" style="color:${c.fg_secondary}">Jan 2024</div>
+      </div>
+    </div>`,
+};
 
 function esc(s) {
   return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
