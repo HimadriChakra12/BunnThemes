@@ -1,0 +1,748 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>BunnThemes — Make a Theme</title>
+<style>
+:root {
+  --bg0: #1d2021;
+  --bg1: #282828;
+  --bg2: #3c3836;
+  --bg3: #504945;
+  --fg0: #fbf1c7;
+  --fg1: #ebdbb2;
+  --fg2: #d5c4a1;
+  --muted: #928374;
+  --accent: #d79921;
+  --green: #8ec07c;
+  --red: #fb4934;
+  --mono: "JetBrains Mono","Fira Code",ui-monospace,Consolas,monospace;
+  --sans: -apple-system,BlinkMacSystemFont,"Segoe UI",system-ui,sans-serif;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{height:100%;overflow:hidden}
+body{background:var(--bg0);color:var(--fg1);font-family:var(--sans);display:flex;flex-direction:column}
+
+/* ── header ── */
+.top-bar{
+  display:flex;align-items:center;gap:1rem;
+  padding:.7rem 1.25rem;
+  background:var(--bg1);border-bottom:1px solid var(--bg2);
+  flex-shrink:0;
+}
+.top-bar h1{font-family:var(--mono);font-size:.95rem;color:var(--accent);font-weight:700}
+.top-bar .sub{font-size:.75rem;color:var(--muted);margin-left:.25rem}
+.top-bar-right{margin-left:auto;display:flex;gap:.5rem;align-items:center}
+
+/* meta inputs row */
+.meta-row{
+  display:flex;gap:.75rem;align-items:center;flex-wrap:wrap;
+  padding:.55rem 1.25rem;
+  background:var(--bg1);border-bottom:1px solid var(--bg2);
+  flex-shrink:0;
+}
+.meta-row label{font-size:.75rem;color:var(--muted);white-space:nowrap}
+.meta-row input[type=text]{
+  background:var(--bg0);border:1px solid var(--bg2);border-radius:5px;
+  color:var(--fg1);font:inherit;font-size:.8rem;padding:.3rem .55rem;
+  outline:none;width:160px;transition:border-color .12s
+}
+.meta-row input:focus{border-color:var(--accent)}
+.sep{width:1px;height:20px;background:var(--bg2);flex-shrink:0}
+
+/* preset pills */
+.preset-row{
+  display:flex;gap:.4rem;align-items:center;flex-wrap:wrap;
+  padding:.45rem 1.25rem;
+  background:var(--bg0);border-bottom:1px solid var(--bg2);
+  flex-shrink:0;
+}
+.preset-label{font-size:.72rem;color:var(--muted);margin-right:.25rem}
+.pill{
+  background:var(--bg1);border:1px solid var(--bg2);border-radius:20px;
+  color:var(--fg2);font-size:.72rem;padding:.2rem .65rem;cursor:pointer;
+  transition:border-color .12s,color .12s;white-space:nowrap
+}
+.pill:hover{border-color:var(--accent);color:var(--accent)}
+.pill.active{border-color:var(--accent);color:var(--accent);background:var(--bg2)}
+
+/* ── main split ── */
+.workspace{
+  display:flex;flex:1;min-height:0;overflow:hidden;
+}
+
+/* ── LEFT: phone preview ── */
+.pane-preview{
+  width:320px;flex-shrink:0;
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  padding:1.25rem 1rem;
+  background:var(--bg0);border-right:1px solid var(--bg2);
+  overflow-y:auto;
+}
+
+.phone{
+  width:260px;
+  border-radius:28px;
+  overflow:hidden;
+  box-shadow:0 12px 40px #00000088,0 0 0 2px #ffffff18;
+  flex-shrink:0;
+}
+.phone-status{
+  display:flex;justify-content:space-between;align-items:center;
+  padding:.25rem .75rem;font-size:.55rem;font-weight:600;
+}
+.phone-header{
+  display:flex;align-items:center;gap:.4rem;
+  padding:.45rem .75rem;font-size:.7rem;font-weight:700;
+}
+.phone-body{display:flex;flex:1}
+.phone-sidebar{width:48px;display:flex;flex-direction:column;align-items:center;padding:.4rem 0;gap:.35rem}
+.phone-server{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.6rem;font-weight:700;cursor:default}
+.phone-channels{width:110px;padding:.4rem .35rem;overflow:hidden}
+.phone-cat{font-size:.5rem;text-transform:uppercase;letter-spacing:.06em;padding:.15rem .3rem;margin-bottom:.2rem}
+.phone-ch{font-size:.62rem;padding:.18rem .35rem;border-radius:3px;margin-bottom:.1rem;display:flex;align-items:center;gap:.25rem}
+.phone-ch.active{font-weight:700}
+.phone-chat{flex:1;display:flex;flex-direction:column;justify-content:flex-end;padding:.4rem .5rem;gap:.35rem;min-width:0}
+.phone-msg-name{font-size:.55rem;font-weight:700;margin-bottom:.08rem}
+.phone-msg-text{font-size:.6rem;line-height:1.35}
+.phone-input{font-size:.58rem;padding:.25rem .45rem;border-radius:4px;margin-top:.1rem}
+
+/* ── RIGHT: properties ── */
+.pane-props{
+  flex:1;min-width:0;
+  display:flex;flex-direction:column;
+  background:var(--bg0);
+  overflow:hidden;
+}
+
+.props-tabs{
+  display:flex;gap:0;
+  background:var(--bg1);
+  border-bottom:1px solid var(--bg2);
+  flex-shrink:0;padding:0 1rem;
+}
+.props-tab{
+  background:none;border:none;color:var(--muted);
+  font:inherit;font-size:.8rem;padding:.6rem .9rem;cursor:pointer;
+  border-bottom:2px solid transparent;margin-bottom:-1px;
+  transition:color .12s,border-color .12s;
+}
+.props-tab.active{color:var(--accent);border-bottom-color:var(--accent)}
+.props-tab:hover:not(.active){color:var(--fg2)}
+
+.props-body{flex:1;overflow-y:auto;padding:1rem 1.25rem}
+
+/* color section */
+.color-section-title{
+  font-size:.68rem;text-transform:uppercase;letter-spacing:.07em;
+  color:var(--muted);margin-bottom:.6rem;padding-bottom:.3rem;
+  border-bottom:1px solid var(--bg2);
+}
+.color-rows{display:flex;flex-direction:column;gap:.35rem;margin-bottom:1.25rem}
+.color-row{
+  display:flex;align-items:center;gap:.65rem;
+  background:var(--bg1);border:1px solid var(--bg2);
+  border-radius:7px;padding:.45rem .65rem;
+  transition:border-color .12s;
+}
+.color-row:hover{border-color:var(--bg3)}
+.color-swatch-wrap{position:relative;flex-shrink:0}
+.color-swatch-wrap input[type=color]{
+  width:30px;height:30px;border-radius:50%;border:none;padding:0;
+  cursor:pointer;background:none;display:block;
+}
+.cr-info{flex:1;min-width:0}
+.cr-label{font-size:.8rem;color:var(--fg1)}
+.cr-hint{font-size:.67rem;color:var(--muted);margin-top:.05rem}
+.cr-hex{
+  width:80px;flex-shrink:0;
+  background:var(--bg0);border:1px solid var(--bg2);border-radius:5px;
+  color:var(--fg2);font:inherit;font-size:.75rem;font-family:var(--mono);
+  padding:.25rem .4rem;outline:none;text-align:center;
+  transition:border-color .12s;
+}
+.cr-hex:focus{border-color:var(--accent)}
+
+/* info tab */
+.info-field{margin-bottom:.9rem}
+.info-field label{display:block;font-size:.78rem;color:var(--fg2);margin-bottom:.28rem}
+.info-field input[type=text]{
+  width:100%;background:var(--bg1);border:1px solid var(--bg2);border-radius:6px;
+  color:var(--fg1);font:inherit;font-size:.85rem;padding:.45rem .65rem;
+  outline:none;transition:border-color .12s;
+}
+.info-field input:focus{border-color:var(--accent)}
+.info-field .hint{font-size:.72rem;color:var(--muted);margin-top:.25rem}
+
+/* submit tab */
+.steps{counter-reset:s;list-style:none}
+.steps li{counter-increment:s;display:flex;gap:.9rem;padding:.85rem 0;border-bottom:1px solid var(--bg2)}
+.steps li:last-child{border-bottom:none}
+.steps li::before{
+  content:counter(s);background:var(--bg2);color:var(--accent);
+  font-family:var(--mono);font-size:.7rem;font-weight:700;
+  width:24px;height:24px;border-radius:50%;display:flex;align-items:center;justify-content:center;
+  flex-shrink:0;margin-top:.1rem;
+}
+.steps li p{font-size:.82rem;line-height:1.55;color:var(--fg2)}
+.steps li p strong{color:var(--fg1)}
+.steps li code{font-family:var(--mono);font-size:.75rem;background:var(--bg2);border-radius:3px;padding:.1rem .3rem;color:var(--green)}
+.steps a{color:var(--accent)}
+
+/* json tab */
+.json-wrap{position:relative}
+.json-out{
+  background:var(--bg1);border:1px solid var(--bg2);border-radius:7px;
+  padding:1rem;font:0.72rem/1.55 var(--mono);color:var(--fg2);
+  max-height:calc(100vh - 260px);overflow-y:auto;white-space:pre;
+}
+.copy-btn{
+  position:absolute;top:.55rem;right:.55rem;
+  background:var(--bg2);border:1px solid var(--bg3);border-radius:5px;
+  color:var(--fg2);font:.73rem/1 var(--sans);padding:.3rem .6rem;cursor:pointer;
+  transition:color .12s,border-color .12s;
+}
+.copy-btn:hover{color:var(--accent);border-color:var(--accent)}
+
+/* shared buttons */
+.btn{
+  display:inline-flex;align-items:center;gap:.35rem;
+  padding:.5rem 1rem;border-radius:6px;font:inherit;font-size:.82rem;font-weight:600;
+  cursor:pointer;border:none;text-decoration:none;transition:opacity .12s,transform .07s;
+}
+.btn:active{transform:scale(.97)}
+.btn-primary{background:var(--accent);color:var(--bg0)}
+.btn-outline{background:transparent;border:1px solid var(--bg2);color:var(--fg2)}
+.btn:hover{opacity:.85}
+.actions{display:flex;gap:.65rem;flex-wrap:wrap;margin-top:1rem;padding-top:.75rem;border-top:1px solid var(--bg2)}
+
+/* mode toggle */
+.mode-toggle{display:flex;gap:0;background:var(--bg2);border-radius:5px;padding:.18rem;flex-shrink:0}
+.mt-btn{background:none;border:none;color:var(--muted);font:.73rem/1 var(--sans);padding:.28rem .6rem;border-radius:3px;cursor:pointer;transition:background .12s,color .12s}
+.mt-btn.active{background:var(--bg3);color:var(--fg0)}
+
+/* notice */
+.notice{
+  background:var(--bg1);border-left:3px solid var(--accent);
+  border-radius:0 5px 5px 0;padding:.6rem .8rem;
+  font-size:.78rem;color:var(--fg2);line-height:1.5;margin-bottom:1rem;
+}
+
+/* scrollbar */
+::-webkit-scrollbar{width:6px;height:6px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:var(--bg2);border-radius:3px}
+
+@media(max-width:700px){
+  html,body{overflow:auto}
+  .workspace{flex-direction:column}
+  .pane-preview{width:100%;border-right:none;border-bottom:1px solid var(--bg2);padding:.75rem;height:auto}
+  .phone{margin:0 auto}
+  .pane-props{overflow:visible}
+  .json-out{max-height:400px}
+}
+</style>
+</head>
+<body>
+
+<!-- ── TOP BAR ── -->
+<div class="top-bar">
+  <h1>🐰 BunnThemes</h1>
+  <span class="sub">theme creator</span>
+  <div class="top-bar-right">
+    <a href="./index.html" class="btn btn-outline" style="font-size:.75rem;padding:.3rem .7rem">Browse themes ↗</a>
+    <a href="https://github.com/HimadriChakra12/BunnThemes" target="_blank" rel="noopener" class="btn btn-outline" style="font-size:.75rem;padding:.3rem .7rem">GitHub ↗</a>
+  </div>
+</div>
+
+<!-- ── META ROW ── -->
+<div class="meta-row">
+  <label>Theme name</label>
+  <input type="text" id="meta-name" placeholder="Ocean Blue" value="" oninput="syncMeta()">
+  <div class="sep"></div>
+  <label>Folder</label>
+  <input type="text" id="meta-folder" placeholder="OceanBlue" value="" oninput="syncMeta()">
+  <button class="pill" style="border-radius:5px" onclick="autoFolder()">auto ↺</button>
+  <div class="sep"></div>
+  <label>Your name</label>
+  <input type="text" id="meta-author" placeholder="YourUsername" value="" oninput="syncMeta()">
+  <div class="sep" style="margin-left:auto"></div>
+  <div class="mode-toggle">
+    <button class="mt-btn active" id="mt-dark"  onclick="setMode('dark')">Dark</button>
+    <button class="mt-btn"        id="mt-light" onclick="setMode('light')">Light</button>
+  </div>
+  <button class="btn btn-primary" onclick="downloadJson()" style="padding:.35rem .85rem;font-size:.78rem">Download .json</button>
+</div>
+
+<!-- ── PRESET ROW ── -->
+<div class="preset-row">
+  <span class="preset-label">Start from:</span>
+  <button class="pill active" id="pill-gruvbox"     onclick="applyPreset('gruvbox')">Gruvbox</button>
+  <button class="pill"        id="pill-nord"        onclick="applyPreset('nord')">Nord</button>
+  <button class="pill"        id="pill-catppuccin"  onclick="applyPreset('catppuccin')">Catppuccin</button>
+  <button class="pill"        id="pill-dracula"     onclick="applyPreset('dracula')">Dracula</button>
+  <button class="pill"        id="pill-onedark"     onclick="applyPreset('onedark')">One Dark</button>
+  <button class="pill"        id="pill-rose"        onclick="applyPreset('rose')">Rosé Pine</button>
+  <button class="pill"        id="pill-everforest"  onclick="applyPreset('everforest')">Everforest</button>
+  <button class="pill"        id="pill-tokyo"       onclick="applyPreset('tokyo')">Tokyo Night</button>
+</div>
+
+<!-- ── WORKSPACE ── -->
+<div class="workspace">
+
+  <!-- LEFT: PHONE PREVIEW -->
+  <div class="pane-preview">
+    <div class="phone" id="phone">
+      <!-- built by JS -->
+    </div>
+  </div>
+
+  <!-- RIGHT: PROPERTIES -->
+  <div class="pane-props">
+    <div class="props-tabs">
+      <button class="props-tab active" data-ptab="colors"  onclick="switchPTab('colors',this)">Colors</button>
+      <button class="props-tab"        data-ptab="info"    onclick="switchPTab('info',this)">Info</button>
+      <button class="props-tab"        data-ptab="json"    onclick="switchPTab('json',this)">JSON</button>
+      <button class="props-tab"        data-ptab="submit"  onclick="switchPTab('submit',this)">How to submit</button>
+    </div>
+
+    <div class="props-body" id="props-body">
+      <!-- filled by JS -->
+    </div>
+  </div>
+</div>
+
+<script>
+// ═══════════════════════════════════════════════
+// CORE COLOR DEFINITIONS
+// ═══════════════════════════════════════════════
+const COLOR_DEFS = [
+  { key:'bg_primary',   label:'Main background',        hint:'Chat area & main surface',     group:'Backgrounds' },
+  { key:'bg_secondary', label:'Sidebar background',     hint:'Channel list panel',            group:'Backgrounds' },
+  { key:'bg_tertiary',  label:'Deep background',        hint:'Modals, drawer, darkest areas', group:'Backgrounds' },
+  { key:'input_bg',     label:'Message box',            hint:'Text input background',         group:'Backgrounds' },
+  { key:'accent',       label:'Accent color',           hint:'Buttons, selected items',       group:'Colors' },
+  { key:'fg_primary',   label:'Main text',              hint:'Regular chat text',             group:'Text' },
+  { key:'fg_secondary', label:'Secondary text',         hint:'Timestamps, muted names',       group:'Text' },
+  { key:'header_text',  label:'Header text',            hint:'Channel name, bold headings',   group:'Text' },
+  { key:'link',         label:'Link color',             hint:'Clickable links',               group:'Text' },
+  { key:'danger',       label:'Danger / error',         hint:'Error messages, leave server',  group:'Colors' },
+  { key:'positive',     label:'Success / online',       hint:'Online dot, success msgs',      group:'Colors' },
+];
+
+const PRESETS = {
+  gruvbox:    { dark:{ bg_primary:'#282828',bg_secondary:'#3c3836',bg_tertiary:'#1d2021',input_bg:'#242120',accent:'#d79921',fg_primary:'#fbf1c7',fg_secondary:'#ebdbb2',header_text:'#fbf1c7',link:'#8ec07c',danger:'#fb4934',positive:'#689d6a' }, light:{ bg_primary:'#fbf1c7',bg_secondary:'#ebdbb2',bg_tertiary:'#d5c4a1',input_bg:'#f2e5bc',accent:'#b57614',fg_primary:'#282828',fg_secondary:'#3c3836',header_text:'#282828',link:'#427b58',danger:'#9d0006',positive:'#427b58' } },
+  nord:       { dark:{ bg_primary:'#2e3440',bg_secondary:'#3b4252',bg_tertiary:'#242933',input_bg:'#1e2430',accent:'#88c0d0',fg_primary:'#eceff4',fg_secondary:'#e5e9f0',header_text:'#eceff4',link:'#81a1c1',danger:'#bf616a',positive:'#a3be8c' }, light:{ bg_primary:'#eceff4',bg_secondary:'#e5e9f0',bg_tertiary:'#d8dee9',input_bg:'#d8dee9',accent:'#5e81ac',fg_primary:'#2e3440',fg_secondary:'#3b4252',header_text:'#2e3440',link:'#5e81ac',danger:'#bf616a',positive:'#a3be8c' } },
+  catppuccin: { dark:{ bg_primary:'#1e1e2e',bg_secondary:'#181825',bg_tertiary:'#11111b',input_bg:'#181825',accent:'#cba6f7',fg_primary:'#cdd6f4',fg_secondary:'#bac2de',header_text:'#cdd6f4',link:'#89b4fa',danger:'#f38ba8',positive:'#a6e3a1' }, light:{ bg_primary:'#eff1f5',bg_secondary:'#e6e9ef',bg_tertiary:'#dce0e8',input_bg:'#dce0e8',accent:'#8839ef',fg_primary:'#4c4f69',fg_secondary:'#5c5f77',header_text:'#4c4f69',link:'#1e66f5',danger:'#d20f39',positive:'#40a02b' } },
+  dracula:    { dark:{ bg_primary:'#282a36',bg_secondary:'#21222c',bg_tertiary:'#191a21',input_bg:'#1a1b23',accent:'#bd93f9',fg_primary:'#f8f8f2',fg_secondary:'#abb2bf',header_text:'#f8f8f2',link:'#8be9fd',danger:'#ff5555',positive:'#50fa7b' }, light:{ bg_primary:'#f8f8f2',bg_secondary:'#eeeeee',bg_tertiary:'#e0e0e0',input_bg:'#e5e5e5',accent:'#bd93f9',fg_primary:'#282a36',fg_secondary:'#6272a4',header_text:'#282a36',link:'#0077aa',danger:'#ff5555',positive:'#50fa7b' } },
+  onedark:    { dark:{ bg_primary:'#282c34',bg_secondary:'#21252b',bg_tertiary:'#1a1d23',input_bg:'#1e2127',accent:'#61afef',fg_primary:'#abb2bf',fg_secondary:'#9da5b4',header_text:'#abb2bf',link:'#61afef',danger:'#e06c75',positive:'#98c379' }, light:{ bg_primary:'#fafafa',bg_secondary:'#f0f0f0',bg_tertiary:'#e8e8e8',input_bg:'#e5e5e6',accent:'#4078f2',fg_primary:'#383a42',fg_secondary:'#4f525e',header_text:'#383a42',link:'#4078f2',danger:'#ca1243',positive:'#50a14f' } },
+  rose:       { dark:{ bg_primary:'#191724',bg_secondary:'#1f1d2e',bg_tertiary:'#16141f',input_bg:'#15121e',accent:'#eb6f92',fg_primary:'#e0def4',fg_secondary:'#908caa',header_text:'#e0def4',link:'#c4a7e7',danger:'#eb6f92',positive:'#31748f' }, light:{ bg_primary:'#faf4ed',bg_secondary:'#fffaf3',bg_tertiary:'#f2e9e1',input_bg:'#dfdad9',accent:'#b4637a',fg_primary:'#575279',fg_secondary:'#6e6a86',header_text:'#575279',link:'#286983',danger:'#b4637a',positive:'#286983' } },
+  everforest: { dark:{ bg_primary:'#2d353b',bg_secondary:'#272e33',bg_tertiary:'#1e2326',input_bg:'#1a2228',accent:'#a7c080',fg_primary:'#d3c6aa',fg_secondary:'#859289',header_text:'#d3c6aa',link:'#7fbbb3',danger:'#e67e80',positive:'#a7c080' }, light:{ bg_primary:'#fdf6e3',bg_secondary:'#f4f0d9',bg_tertiary:'#eae4ca',input_bg:'#e8e3cb',accent:'#8da101',fg_primary:'#5c6a72',fg_secondary:'#7d9a7d',header_text:'#5c6a72',link:'#3a94c5',danger:'#f85552',positive:'#8da101' } },
+  tokyo:      { dark:{ bg_primary:'#1a1b26',bg_secondary:'#16161e',bg_tertiary:'#0f0f14',input_bg:'#13131a',accent:'#7aa2f7',fg_primary:'#a9b1d6',fg_secondary:'#787c99',header_text:'#a9b1d6',link:'#7dcfff',danger:'#f7768e',positive:'#9ece6a' }, light:{ bg_primary:'#d5d6db',bg_secondary:'#cbccd1',bg_tertiary:'#c0c1c7',input_bg:'#b8bac0',accent:'#2e7de9',fg_primary:'#343b58',fg_secondary:'#565f89',header_text:'#343b58',link:'#2e7de9',danger:'#f52a65',positive:'#587539' } },
+};
+
+// ═══════════════════════════════════════════════
+// STATE
+// ═══════════════════════════════════════════════
+let mode = 'dark';
+let dc = { ...PRESETS.gruvbox.dark };
+let lc = { ...PRESETS.gruvbox.light };
+let activePreset = 'gruvbox';
+let activeTab = 'colors';
+
+function C() { return mode === 'dark' ? dc : lc; }
+
+// ═══════════════════════════════════════════════
+// PHONE PREVIEW
+// ═══════════════════════════════════════════════
+function renderPhone() {
+  const c = C();
+  const name  = document.getElementById('meta-name')?.value.trim()   || 'My Theme';
+  const author= document.getElementById('meta-author')?.value.trim() || 'You';
+
+  document.getElementById('phone').innerHTML = `
+    <div style="background:${c.bg_tertiary}">
+      <div class="phone-status" style="background:${c.bg_tertiary};color:${c.fg_secondary}">
+        <span>9:41</span><span>⚡</span>
+      </div>
+    </div>
+    <div style="display:flex;height:320px">
+      <!-- server strip -->
+      <div class="phone-sidebar" style="background:${c.bg_tertiary}">
+        <div class="phone-server" style="background:${c.accent};color:${c.bg_primary}" title="Home">🐰</div>
+        <div style="width:28px;height:1px;background:${c.bg_secondary};margin:.1rem 0"></div>
+        <div class="phone-server" style="background:${c.bg_secondary};color:${c.fg_secondary}">S</div>
+        <div class="phone-server" style="background:${c.bg_secondary};color:${c.fg_secondary}">G</div>
+      </div>
+      <!-- channel list -->
+      <div class="phone-channels" style="background:${c.bg_secondary}">
+        <div class="phone-cat" style="color:${c.fg_secondary}88">GENERAL</div>
+        <div class="phone-ch active" style="background:${c.accent}22;color:${c.fg_primary}">
+          <span style="color:${c.fg_secondary}">#</span>general
+        </div>
+        <div class="phone-ch" style="color:${c.fg_secondary}">
+          <span style="opacity:.5">#</span>random
+        </div>
+        <div class="phone-ch" style="color:${c.fg_secondary}">
+          <span style="opacity:.5">#</span>themes
+        </div>
+        <div class="phone-cat" style="color:${c.fg_secondary}88;margin-top:.4rem">VOICE</div>
+        <div class="phone-ch" style="color:${c.fg_secondary}">
+          <span style="color:${c.positive}">🔊</span>lounge
+        </div>
+      </div>
+      <!-- chat -->
+      <div class="phone-chat" style="background:${c.bg_primary}">
+        <div>
+          <div class="phone-msg-name" style="color:${c.accent}">${author}</div>
+          <div class="phone-msg-text" style="color:${c.fg_primary}">just made <strong>${name}</strong> ✨</div>
+        </div>
+        <div>
+          <div class="phone-msg-name" style="color:${c.link}">BunnBot</div>
+          <div class="phone-msg-text" style="color:${c.fg_secondary}">looks 🔥 let's gooo</div>
+        </div>
+        <div>
+          <div class="phone-msg-name" style="color:${c.positive}">friend</div>
+          <div class="phone-msg-text" style="color:${c.fg_secondary}">bro send the <a style="color:${c.link}">link</a></div>
+        </div>
+        <div class="phone-input" style="background:${c.input_bg};color:${c.fg_secondary}88">
+          Message #general
+        </div>
+      </div>
+    </div>
+    <!-- bottom nav -->
+    <div style="display:flex;justify-content:space-around;padding:.35rem 0;background:${c.bg_secondary};border-top:1px solid ${c.bg_tertiary}">
+      <span style="font-size:.65rem;color:${c.accent}">💬</span>
+      <span style="font-size:.65rem;color:${c.fg_secondary}">🔔</span>
+      <span style="font-size:.65rem;color:${c.fg_secondary}">👤</span>
+    </div>
+  `;
+}
+
+// ═══════════════════════════════════════════════
+// PROPS BODY RENDER
+// ═══════════════════════════════════════════════
+function renderPropsBody() {
+  const body = document.getElementById('props-body');
+  if (activeTab === 'colors')  body.innerHTML = buildColorsHTML();
+  if (activeTab === 'info')    body.innerHTML = buildInfoHTML();
+  if (activeTab === 'json')    body.innerHTML = buildJsonHTML();
+  if (activeTab === 'submit')  body.innerHTML = buildSubmitHTML();
+
+  if (activeTab === 'colors')  attachColorListeners();
+  if (activeTab === 'info')    attachInfoListeners();
+}
+
+// ── Colors tab ──
+function buildColorsHTML() {
+  const c = C();
+  const groups = {};
+  COLOR_DEFS.forEach(def => {
+    if (!groups[def.group]) groups[def.group] = [];
+    groups[def.group].push(def);
+  });
+  let html = '';
+  for (const [gname, defs] of Object.entries(groups)) {
+    html += `<div class="color-section-title">${gname}</div><div class="color-rows">`;
+    defs.forEach(({ key, label, hint }) => {
+      const val = c[key];
+      html += `
+        <div class="color-row">
+          <div class="color-swatch-wrap">
+            <input type="color" id="sw-${key}" value="${val}">
+          </div>
+          <div class="cr-info">
+            <div class="cr-label">${label}</div>
+            <div class="cr-hint">${hint}</div>
+          </div>
+          <input type="text" class="cr-hex" id="hx-${key}" value="${val}" maxlength="9">
+        </div>`;
+    });
+    html += `</div>`;
+  }
+  return html;
+}
+
+function attachColorListeners() {
+  COLOR_DEFS.forEach(({ key }) => {
+    const sw = document.getElementById('sw-' + key);
+    const hx = document.getElementById('hx-' + key);
+    if (!sw || !hx) return;
+
+    sw.addEventListener('input', () => {
+      hx.value = sw.value;
+      setColor(key, sw.value);
+    });
+    hx.addEventListener('input', () => {
+      let v = hx.value.trim();
+      if (!v.startsWith('#')) v = '#' + v;
+      if (/^#[0-9a-fA-F]{6}$/.test(v)) {
+        sw.value = v;
+        setColor(key, v);
+      }
+    });
+    hx.addEventListener('blur', () => {
+      let v = hx.value.trim();
+      if (!v.startsWith('#')) v = '#' + v;
+      if (/^#[0-9a-fA-F]{6}$/.test(v)) {
+        hx.value = v; sw.value = v; setColor(key, v);
+      } else {
+        const cur = C()[key];
+        hx.value = cur; sw.value = cur;
+      }
+    });
+  });
+}
+
+function setColor(key, val) {
+  if (mode === 'dark') dc[key] = val; else lc[key] = val;
+  activePreset = null;
+  document.querySelectorAll('[id^=pill-]').forEach(p => p.classList.remove('active'));
+  renderPhone();
+}
+
+// ── Info tab ──
+function buildInfoHTML() {
+  const name   = document.getElementById('meta-name')?.value   || '';
+  const folder = document.getElementById('meta-folder')?.value || '';
+  const author = document.getElementById('meta-author')?.value || '';
+  return `
+    <div class="notice">These fields are also editable in the bar at the top.</div>
+    <div class="info-field">
+      <label>Theme name <span style="color:var(--red)">*</span></label>
+      <input type="text" id="if-name"   value="${esc(name)}"   placeholder="Ocean Blue">
+      <p class="hint">What people see in the theme list on their phone.</p>
+    </div>
+    <div class="info-field">
+      <label>Folder / file name <span style="color:var(--red)">*</span></label>
+      <input type="text" id="if-folder" value="${esc(folder)}" placeholder="OceanBlue">
+      <p class="hint">No spaces. Your theme goes in <code style="font-family:var(--mono);font-size:.75rem;background:var(--bg2);padding:.1rem .3rem;border-radius:3px">{Folder}/{Folder}.json</code></p>
+    </div>
+    <div class="info-field">
+      <label>Your name / Discord handle</label>
+      <input type="text" id="if-author" value="${esc(author)}" placeholder="YourUsername">
+    </div>
+    <div class="actions">
+      <button class="btn btn-primary" onclick="downloadJson()">Download .json</button>
+      <button class="btn btn-outline" onclick="switchPTab('submit', document.querySelector('[data-ptab=submit]'))">How to submit →</button>
+    </div>`;
+}
+
+function attachInfoListeners() {
+  const map = { 'if-name':'meta-name', 'if-folder':'meta-folder', 'if-author':'meta-author' };
+  Object.entries(map).forEach(([from, to]) => {
+    const el = document.getElementById(from);
+    if (el) el.addEventListener('input', () => {
+      document.getElementById(to).value = el.value;
+      syncMeta();
+    });
+  });
+}
+
+// ── JSON tab ──
+function buildJsonHTML() {
+  return `
+    <div class="json-wrap">
+      <pre class="json-out" id="json-out">${esc(buildJson())}</pre>
+      <button class="copy-btn" onclick="copyJson()">Copy</button>
+    </div>
+    <div class="actions">
+      <button class="btn btn-primary" onclick="downloadJson()">Download .json</button>
+    </div>`;
+}
+
+// ── Submit tab ──
+function buildSubmitHTML() {
+  const folder = document.getElementById('meta-folder')?.value.trim() || 'YourTheme';
+  const fname  = folder + '.json';
+  const name   = document.getElementById('meta-name')?.value.trim()   || 'My Theme';
+  const author = document.getElementById('meta-author')?.value.trim() || 'Anonymous';
+  return `
+    <div class="notice">
+      Submitting = opening a Pull Request on GitHub. You need a free account. Follow the steps:
+    </div>
+    <ol class="steps">
+      <li><p><strong>Download your theme file</strong> — click the button below. It saves as <code>${esc(fname)}</code>.</p></li>
+      <li><p><strong>Go to the repo</strong> → <a href="https://github.com/HimadriChakra12/BunnThemes" target="_blank" rel="noopener">github.com/HimadriChakra12/BunnThemes</a> and click <strong>Fork</strong> (top right).</p></li>
+      <li><p>In your fork click <strong>Add file → Upload files</strong>.<br>
+        Type <code>${esc(folder)}/${esc(fname)}</code> in the path box — GitHub creates the folder automatically.<br>Upload your <code>${esc(fname)}</code>.</p></li>
+      <li><p>Write a short commit message like <em>"add ${esc(name)} theme"</em> and click <strong>Commit changes</strong>.</p></li>
+      <li><p>Go back to the original repo and click <strong>Compare &amp; pull request → Create pull request</strong>.<br>Describe your theme briefly and submit.</p></li>
+      <li><p>🎉 Once merged, a GitHub Action auto-adds your theme to the site. Done!</p></li>
+    </ol>
+    <p style="font-size:.75rem;color:var(--muted);margin:.75rem 0 .25rem">File: <code style="font-family:var(--mono);font-size:.72rem;background:var(--bg2);padding:.1rem .3rem;border-radius:3px">${esc(folder)}/${esc(fname)}</code> — Author: <strong style="color:var(--fg1)">${esc(author)}</strong></p>
+    <div class="actions">
+      <button class="btn btn-primary" onclick="downloadJson()">Download .json</button>
+      <a href="https://github.com/HimadriChakra12/BunnThemes" target="_blank" rel="noopener" class="btn btn-outline">Open repo ↗</a>
+    </div>`;
+}
+
+// ═══════════════════════════════════════════════
+// JSON BUILD
+// ═══════════════════════════════════════════════
+function buildJson() {
+  const name   = document.getElementById('meta-name')?.value.trim()   || 'My Theme';
+  const author = document.getElementById('meta-author')?.value.trim() || 'Anonymous';
+  const d = dc, l = lc;
+  const p = (dk, lk) => [d[dk], l[lk||dk]];
+  const obj = {
+    name, description: name,
+    authors: [{ name: author }],
+    semanticColors: {
+      BACKGROUND_PRIMARY:           p('bg_primary'),
+      BACKGROUND_SECONDARY:         p('bg_secondary'),
+      BACKGROUND_SECONDARY_ALT:     p('bg_secondary'),
+      BACKGROUND_TERTIARY:          p('bg_tertiary'),
+      BACKGROUND_MOBILE_PRIMARY:    p('bg_secondary'),
+      BACKGROUND_MOBILE_SECONDARY:  p('bg_tertiary'),
+      BACKGROUND_NESTED_FLOATING:   p('bg_secondary'),
+      BACKGROUND_FLOATING:          p('bg_secondary'),
+      CHAT_BACKGROUND:              p('bg_primary'),
+      INPUT_BACKGROUND:             p('input_bg'),
+      EMBED_BACKGROUND:             p('bg_secondary'),
+      MODAL_FOOTER_BACKGROUND:      p('bg_primary'),
+      CHANNELTEXTAREA_BACKGROUND:   p('input_bg'),
+      BACKGROUND_ACCENT:            p('accent'),
+      BACKGROUND_MESSAGE_HOVER:     [d.bg_secondary+'28', l.bg_secondary+'28'],
+      BACKGROUND_MODIFIER_ACCENT:   [d.bg_secondary+'73', l.bg_secondary+'73'],
+      BACKGROUND_MODIFIER_ACTIVE:   [d.accent+'20', l.accent+'20'],
+      BACKGROUND_MODIFIER_HOVER:    [d.fg_secondary+'14', l.fg_secondary+'14'],
+      BACKGROUND_MODIFIER_SELECTED: p('bg_secondary'),
+      HEADER_PRIMARY:               p('header_text'),
+      HEADER_SECONDARY:             p('accent'),
+      TEXT_NORMAL:                  p('fg_secondary'),
+      TEXT_PRIMARY:                 p('fg_primary'),
+      TEXT_MUTED:                   [d.fg_secondary+'aa', l.fg_secondary+'aa'],
+      TEXT_LINK:                    p('link'),
+      TEXT_DANGER:                  p('danger'),
+      TEXT_POSITIVE:                p('positive'),
+      TEXT_WARNING:                 p('accent'),
+      INTERACTIVE_NORMAL:           p('fg_secondary'),
+      INTERACTIVE_HOVER:            p('fg_primary'),
+      INTERACTIVE_ACTIVE:           p('fg_primary'),
+      INTERACTIVE_MUTED:            [d.fg_secondary+'88', l.fg_secondary+'88'],
+      ICON_MUTED:                   [d.fg_secondary+'88', l.fg_secondary+'88'],
+      CHANNELS_DEFAULT:             p('fg_secondary'),
+      CHANNEL_ICON:                 p('link'),
+      CHANNEL_TEXT_AREA_PLACEHOLDER:[d.fg_secondary, l.fg_secondary],
+      SCROLLBAR_AUTO_THUMB:         p('bg_secondary'),
+      SCROLLBAR_AUTO_TRACK:         p('bg_tertiary'),
+      SCROLLBAR_THIN_THUMB:         p('bg_secondary'),
+      SCROLLBAR_THIN_TRACK:         p('bg_tertiary'),
+      FOCUS_PRIMARY:                p('accent'),
+      ANDROID_RIPPLE:               p('accent'),
+      ELEVATION_HIGH:               p('bg_primary'),
+      ELEVATION_LOW:                p('bg_primary'),
+      ELEVATION_MEDIUM:             p('bg_primary'),
+      ELEVATION_STROKE:             p('bg_secondary'),
+      STATUS_DANGER_BACKGROUND:     p('danger'),
+      STATUS_DANGER_TEXT:           ['#ffffff','#ffffff'],
+      STATUS_POSITIVE_BACKGROUND:   p('positive'),
+      STATUS_POSITIVE_TEXT:         ['#ffffff','#ffffff'],
+    },
+    plus: {
+      version:'0', customOverlays:true,
+      mentionLineColor: d.accent,
+      icons: {
+        ic_close_24px: d.fg_primary,
+        ic_radio_circle_checked: d.accent,
+        ic_radio_circle_checked__overlay: d.bg_primary,
+        StatusOnline: d.positive,
+        StatusIdle: d.accent,
+        StatusDND: d.danger,
+        StatusOffline: d.fg_secondary,
+        StarIcon: d.accent,
+      }
+    },
+    spec: 2
+  };
+  return JSON.stringify(obj, null, 2);
+}
+
+// ═══════════════════════════════════════════════
+// ACTIONS
+// ═══════════════════════════════════════════════
+function downloadJson() {
+  const folder = document.getElementById('meta-folder')?.value.trim() ||
+    (document.getElementById('meta-name')?.value.trim()||'MyTheme').replace(/[^a-zA-Z0-9_-]/g,'') || 'MyTheme';
+  const a = document.createElement('a');
+  a.href = URL.createObjectURL(new Blob([buildJson()],{type:'application/json'}));
+  a.download = folder + '.json';
+  a.click();
+}
+
+function copyJson() {
+  const text = buildJson();
+  if (navigator.clipboard) navigator.clipboard.writeText(text).catch(()=>fbCopy(text));
+  else fbCopy(text);
+  const btn = document.querySelector('.copy-btn');
+  if (btn) { btn.textContent='Copied!'; setTimeout(()=>btn.textContent='Copy',1400); }
+}
+function fbCopy(t) {
+  const ta=document.createElement('textarea');ta.value=t;ta.style.cssText='position:fixed;opacity:0';
+  document.body.appendChild(ta);ta.select();try{document.execCommand('copy')}catch(e){}
+  document.body.removeChild(ta);
+}
+
+// ═══════════════════════════════════════════════
+// PRESETS
+// ═══════════════════════════════════════════════
+function applyPreset(name) {
+  const p = PRESETS[name]; if (!p) return;
+  dc = { ...p.dark }; lc = { ...p.light };
+  activePreset = name;
+  document.querySelectorAll('[id^=pill-]').forEach(el => el.classList.remove('active'));
+  const pill = document.getElementById('pill-' + name);
+  if (pill) pill.classList.add('active');
+  renderPhone();
+  renderPropsBody();
+}
+
+// ═══════════════════════════════════════════════
+// MODE TOGGLE
+// ═══════════════════════════════════════════════
+function setMode(m) {
+  mode = m;
+  document.getElementById('mt-dark').classList.toggle('active', m==='dark');
+  document.getElementById('mt-light').classList.toggle('active', m==='light');
+  renderPhone();
+  renderPropsBody();
+}
+
+// ═══════════════════════════════════════════════
+// TABS
+// ═══════════════════════════════════════════════
+function switchPTab(id, btn) {
+  activeTab = id;
+  document.querySelectorAll('.props-tab').forEach(b=>b.classList.remove('active'));
+  if (btn) btn.classList.add('active');
+  renderPropsBody();
+}
+
+// ═══════════════════════════════════════════════
+// META SYNC
+// ═══════════════════════════════════════════════
+function syncMeta() {
+  renderPhone(); // name + author shown in preview
+}
+function autoFolder() {
+  const name = document.getElementById('meta-name')?.value.trim()||'';
+  const slug = name.replace(/[^a-zA-Z0-9_-]/g,'');
+  const el = document.getElementById('meta-folder');
+  if (el && slug) el.value = slug;
+}
+
+// ── escape for innerHTML ──
+function esc(s) {
+  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+}
+
+// ═══════════════════════════════════════════════
+// INIT
+// ═══════════════════════════════════════════════
+renderPhone();
+renderPropsBody();
+</script>
+</body>
+</html>
