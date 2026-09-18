@@ -190,7 +190,47 @@ details.fallback summary:hover{color:var(--fg2)}
 .steps li p strong{color:var(--fg1)}
 .steps a{color:var(--accent)}
 
-/* preview tab */
+/* build split layout: live preview left, color editor right */
+.build-split{display:grid;grid-template-columns:360px 1fr;gap:1.75rem;align-items:start}
+.build-preview-col{position:sticky;top:1.25rem}
+.build-colors-col{min-width:0}
+@media(max-width:900px){
+  .build-split{grid-template-columns:1fr}
+  .build-preview-col{position:static}
+}
+
+/* submit info fields */
+.info-field{margin-bottom:1rem}
+.info-field label{display:block;font-size:.78rem;color:var(--fg2);margin-bottom:.3rem;font-weight:600}
+.info-field input[type=text]{
+  width:100%;background:var(--bg0);border:1px solid var(--bg2);border-radius:6px;
+  color:var(--fg1);font:inherit;font-size:.85rem;padding:.5rem .65rem;outline:none;transition:border-color .12s;
+}
+.info-field input:focus{border-color:var(--accent)}
+.hint{font-size:.72rem;color:var(--muted);margin-top:.3rem}
+.hint code{background:var(--bg2);padding:.05rem .35rem;border-radius:4px;color:var(--green)}
+
+/* preview — styled like an actual phone screen inside the app */
+.preview-frame{
+  border-radius:18px;overflow:hidden;
+  box-shadow:0 10px 30px rgba(0,0,0,.4),0 0 0 1px var(--bg2);
+  max-width:340px;max-height:640px;overflow-y:auto;
+}
+.pv-back{font-size:1.1rem;line-height:1;opacity:.85}
+.pv-hsearch{margin-left:auto;font-size:.9rem;opacity:.7}
+.pv-avatar{
+  width:32px;height:32px;border-radius:50%;flex-shrink:0;
+  display:flex;align-items:center;justify-content:center;
+  font-size:.72rem;font-weight:700;color:#fff;
+}
+.pv-avatar.sm{width:26px;height:26px;font-size:.62rem}
+.pv-msg-row{display:flex;gap:.55rem;align-items:flex-start}
+.pv-bottomnav{
+  display:flex;justify-content:space-around;align-items:center;
+  padding:.55rem 0;margin-top:.4rem;border-top:1px solid;
+}
+.pv-bottomnav div{display:flex;flex-direction:column;align-items:center;gap:.15rem;font-size:.62rem}
+.pv-navicon{font-size:1.05rem;line-height:1}
 .preview-cats{
   display:flex;gap:.4rem;flex-wrap:wrap;margin-bottom:1.1rem;
 }
@@ -293,19 +333,11 @@ details.fallback summary:hover{color:var(--fg2)}
   <!-- sub tabs -->
   <div class="sub-tabs">
     <button class="sub-tab active" data-subtab="build" onclick="switchSubTab('build')">Build</button>
-    <button class="sub-tab" data-subtab="preview" onclick="switchSubTab('preview')">Preview</button>
     <button class="sub-tab" data-subtab="submit" onclick="switchSubTab('submit')">Submit</button>
   </div>
 
   <!-- meta row -->
   <div class="meta-row">
-    <label>Theme name</label>
-    <input type="text" id="meta-name" placeholder="Ocean Blue" value="" oninput="syncMeta()">
-    <div class="sep"></div>
-    <label>Folder</label>
-    <input type="text" id="meta-folder" placeholder="OceanBlue" value="" oninput="syncMeta()">
-    <button class="pill" style="border-radius:5px" onclick="autoFolder()">auto ↺</button>
-    <div class="sep"></div>
     <label>Your name</label>
     <input type="text" id="meta-author" placeholder="YourUsername" value="" oninput="syncMeta()">
     <div class="sep" style="margin-left:auto"></div>
@@ -313,7 +345,6 @@ details.fallback summary:hover{color:var(--fg2)}
       <button class="mt-btn active" id="mt-dark"  onclick="setMode('dark')">Dark</button>
       <button class="mt-btn"        id="mt-light" onclick="setMode('light')">Light</button>
     </div>
-    <button class="btn btn-primary" onclick="downloadJson()" style="padding:.4rem .9rem;font-size:.78rem">Download .json</button>
   </div>
 
   <!-- preset row (build only) -->
@@ -330,45 +361,47 @@ details.fallback summary:hover{color:var(--fg2)}
   </div>
 
   <div class="content">
-    <!-- BUILD panel -->
+    <!-- BUILD panel: live preview on the left, color editor on the right -->
     <div id="tab-build">
-      <div id="colors-body"><!-- filled by JS --></div>
-      <button class="json-toggle" onclick="toggleJson()">
-        <span>View / copy raw JSON</span><span id="json-toggle-arrow">▾</span>
-      </button>
-      <div class="json-wrap" id="json-wrap">
-        <pre class="json-out" id="json-out"></pre>
-        <button class="copy-btn" onclick="copyJson()">Copy</button>
+      <div class="build-split">
+        <div class="build-preview-col">
+          <div class="notice">Rough mockups, not pixel-perfect — just enough to sanity-check every area uses your colors correctly.</div>
+          <div class="preview-cats" id="preview-cats"><!-- filled by JS --></div>
+          <div class="preview-frame" id="preview-frame"><!-- filled by JS --></div>
+        </div>
+        <div class="build-colors-col">
+          <div id="colors-body"><!-- filled by JS --></div>
+          <button class="json-toggle" onclick="toggleJson()">
+            <span>View raw JSON</span><span id="json-toggle-arrow">▾</span>
+          </button>
+          <div class="json-wrap" id="json-wrap">
+            <pre class="json-out" id="json-out"></pre>
+          </div>
+        </div>
       </div>
-    </div>
-
-    <!-- PREVIEW panel -->
-    <div id="tab-preview" style="display:none">
-      <div class="notice">Rough mockups, not pixel-perfect — just enough to sanity-check every area uses your colors correctly.</div>
-      <div class="preview-cats" id="preview-cats"><!-- filled by JS --></div>
-      <div class="preview-frame" id="preview-frame"><!-- filled by JS --></div>
     </div>
 
     <!-- SUBMIT panel -->
     <div id="tab-submit" style="display:none">
       <div class="submit-card">
         <h2>Submit your theme</h2>
-        <p>Click the button below to open a pre-filled submission on GitHub with your theme's JSON attached. You'll need a free GitHub account to post it, but <strong>no forking, no uploading files, no pull request</strong> — a maintainer adds it to the repo for you.</p>
+        <div class="info-field">
+          <label>Theme name <span style="color:var(--red)">*</span></label>
+          <input type="text" id="meta-name" placeholder="Ocean Blue" value="" oninput="syncMeta()">
+        </div>
+        <div class="info-field">
+          <label>Folder / file name <span style="color:var(--red)">*</span></label>
+          <div style="display:flex;gap:.5rem;align-items:center">
+            <input type="text" id="meta-folder" placeholder="OceanBlue" value="" oninput="syncMeta()" style="flex:1">
+            <button class="pill" style="border-radius:5px" onclick="autoFolder()">auto ↺</button>
+          </div>
+          <p class="hint">No spaces. Your theme goes in <code class="file-tag">Folder/Folder.json</code></p>
+        </div>
+        <p>Click the button below to open a pre-filled submission on GitHub with your theme's JSON attached. You'll need a free GitHub account to post it, but <strong>no forking, no uploading files, no pull request</strong> — a maintainer adds it to the repo for you. There's no separate download or copy step — submitting is how you use your theme.</p>
         <p style="margin-top:.5rem">File that will be created: <span class="file-tag" id="submit-filetag">Theme/Theme.json</span></p>
         <div class="actions">
           <button class="btn btn-primary" onclick="submitTheme()">🚀 Submit theme</button>
-          <button class="btn btn-outline" onclick="downloadJson()">Download .json</button>
-          <button class="btn btn-outline" onclick="copyJson()">Copy JSON</button>
         </div>
-        <details class="fallback">
-          <summary>Prefer to open a pull request yourself instead?</summary>
-          <ol class="steps">
-            <li><p><strong>Download your theme file</strong> above — it saves as <code class="file-tag" id="submit-filetag2">Theme.json</code>.</p></li>
-            <li><p>Go to <a href="https://github.com/HimadriChakra12/BunnThemes" target="_blank" rel="noopener">github.com/HimadriChakra12/BunnThemes</a> and click <strong>Fork</strong>.</p></li>
-            <li><p>In your fork, <strong>Add file → Upload files</strong>, type the folder/filename path, and upload your JSON.</p></li>
-            <li><p>Commit, then open a <strong>Pull Request</strong> back to the original repo.</p></li>
-          </ol>
-        </details>
       </div>
     </div>
   </div>
@@ -742,12 +775,11 @@ function switchTopTab(tab) {
 
 function switchSubTab(tab) {
   document.querySelectorAll('.sub-tab').forEach(b => b.classList.toggle('active', b.dataset.subtab === tab));
-  document.getElementById('tab-build').style.display   = tab === 'build'   ? '' : 'none';
-  document.getElementById('tab-preview').style.display = tab === 'preview' ? '' : 'none';
-  document.getElementById('tab-submit').style.display  = tab === 'submit'  ? '' : 'none';
-  document.getElementById('preset-row').style.display  = tab === 'submit' ? 'none' : '';
+  document.getElementById('tab-build').style.display  = tab === 'build'  ? '' : 'none';
+  document.getElementById('tab-submit').style.display = tab === 'submit' ? '' : 'none';
+  document.getElementById('preset-row').style.display = tab === 'submit' ? 'none' : '';
   if (tab === 'submit') updateSubmitCard();
-  if (tab === 'preview') renderPreviewBody();
+  if (tab === 'build') renderPreviewBody();
 }
 
 // ═══════════════════════════════════════════════
@@ -921,7 +953,7 @@ const PREVIEW_CATS = [
 let activePreviewCat = 'chat';
 
 function refreshPreviewIfOpen() {
-  if (document.getElementById('tab-preview')?.style.display !== 'none') renderPreviewBody();
+  if (document.getElementById('tab-build')?.style.display !== 'none') renderPreviewBody();
 }
 
 function renderPreviewBody() {
@@ -947,39 +979,62 @@ function switchPreviewCat(id) {
 
 const PREVIEW_RENDERERS = {
   chat: c => `
-    <div class="pv-header" style="background:${c.bg_tertiary};color:${c.header_text}"># general <span class="pv-sub" style="color:${c.fg_secondary}">3 online</span></div>
+    <div class="pv-header" style="background:${c.bg_tertiary};color:${c.header_text}">
+      <span class="pv-back">‹</span>
+      <span># general</span>
+      <span class="pv-sub" style="color:${c.fg_secondary}">3 online</span>
+      <span class="pv-hsearch" style="color:${c.fg_secondary}">🔍</span>
+    </div>
     <div class="pv-body" style="background:${c.bg_primary}">
-      <div class="pv-msg">
-        <div class="pv-msg-name" style="color:${c.accent}">Alex</div>
-        <div class="pv-msg-text" style="color:${c.fg_primary}">just pushed the update, check the <span class="pv-link" style="color:${c.link}">changelog</span> when you get a sec</div>
+      <div class="pv-msg pv-msg-row">
+        <div class="pv-avatar" style="background:${c.accent}">A</div>
+        <div>
+          <div class="pv-msg-name" style="color:${c.accent}">Alex</div>
+          <div class="pv-msg-text" style="color:${c.fg_primary}">just pushed the update, check the <span class="pv-link" style="color:${c.link}">changelog</span> when you get a sec</div>
+        </div>
       </div>
-      <div class="pv-msg">
-        <div class="pv-msg-name" style="color:${c.link}">Sam</div>
-        <div class="pv-msg-text" style="color:${c.fg_secondary}">looks good, one thing though — build failed on CI</div>
+      <div class="pv-msg pv-msg-row">
+        <div class="pv-avatar" style="background:${c.link}">S</div>
+        <div>
+          <div class="pv-msg-name" style="color:${c.link}">Sam</div>
+          <div class="pv-msg-text" style="color:${c.fg_secondary}">looks good, one thing though — build failed on CI</div>
+        </div>
       </div>
-      <div class="pv-msg">
-        <div class="pv-msg-name" style="color:${c.danger}">Jordan</div>
-        <div class="pv-msg-text" style="color:${c.fg_primary}">⚠️ error in the danger color, red text should show here</div>
+      <div class="pv-msg pv-msg-row">
+        <div class="pv-avatar" style="background:${c.danger}">J</div>
+        <div>
+          <div class="pv-msg-name" style="color:${c.danger}">Jordan</div>
+          <div class="pv-msg-text" style="color:${c.fg_primary}">⚠️ error in the danger color, red text should show here</div>
+        </div>
       </div>
-      <div class="pv-msg">
-        <div class="pv-msg-name" style="color:${c.positive}">Riley</div>
-        <div class="pv-msg-text" style="color:${c.fg_primary}">✅ all fixed, tests passing now</div>
+      <div class="pv-msg pv-msg-row">
+        <div class="pv-avatar" style="background:${c.positive}">R</div>
+        <div>
+          <div class="pv-msg-name" style="color:${c.positive}">Riley</div>
+          <div class="pv-msg-text" style="color:${c.fg_primary}">✅ all fixed, tests passing now</div>
+        </div>
       </div>
       <div class="pv-row" style="background:${c.input_bg};color:${c.fg_secondary}88;margin-top:.5rem">Message #general</div>
     </div>`,
 
   dms: c => `
-    <div class="pv-header" style="background:${c.bg_tertiary};color:${c.header_text}">Messages</div>
+    <div class="pv-header" style="background:${c.bg_tertiary};color:${c.header_text}">
+      <span class="pv-back">‹</span><span>Messages</span>
+      <span class="pv-hsearch" style="color:${c.fg_secondary}">🔍</span>
+    </div>
     <div class="pv-body" style="background:${c.bg_secondary};padding:.5rem">
-      <div class="pv-row" style="background:${c.bg_primary}">
+      <div class="pv-row" style="background:${c.bg_primary};gap:.6rem">
+        <div class="pv-avatar sm" style="background:${c.accent}">A</div>
         <div class="pv-row-label" style="color:${c.fg_primary};font-weight:700">Alex Rivera</div>
         <div class="pv-row-value" style="color:${c.fg_secondary}">3h</div>
       </div>
-      <div class="pv-row" style="background:${c.bg_primary}">
+      <div class="pv-row" style="background:${c.bg_primary};gap:.6rem">
+        <div class="pv-avatar sm" style="background:${c.link}">S</div>
         <div class="pv-row-label" style="color:${c.fg_secondary}">Sam · design-crew</div>
         <div class="pv-row-value" style="color:${c.fg_secondary}">1d</div>
       </div>
-      <div class="pv-row" style="background:${c.bg_primary}">
+      <div class="pv-row" style="background:${c.bg_primary};gap:.6rem">
+        <div class="pv-avatar sm" style="background:${c.positive}">J</div>
         <div class="pv-row-label" style="color:${c.fg_secondary}">Jordan</div>
         <div class="pv-row-value" style="color:${c.accent}">●</div>
       </div>
@@ -1003,7 +1058,9 @@ const PREVIEW_RENDERERS = {
     </div>`,
 
   search: c => `
-    <div class="pv-header" style="background:${c.bg_tertiary};color:${c.header_text}">Search in Server</div>
+    <div class="pv-header" style="background:${c.bg_tertiary};color:${c.header_text}">
+      <span class="pv-back">‹</span><span>Search in Server</span>
+    </div>
     <div class="pv-body" style="background:${c.bg_primary}">
       <div class="pv-tabs-inline">
         <span class="pv-tab-inline" style="color:${c.accent};border-color:${c.accent};font-weight:700">Recent</span>
@@ -1019,7 +1076,9 @@ const PREVIEW_RENDERERS = {
     </div>`,
 
   forum: c => `
-    <div class="pv-header" style="background:${c.bg_tertiary};color:${c.header_text}">resources-forum</div>
+    <div class="pv-header" style="background:${c.bg_tertiary};color:${c.header_text}">
+      <span class="pv-back">‹</span><span>resources-forum</span>
+    </div>
     <div class="pv-body" style="background:${c.bg_primary}">
       <div class="pv-card" style="background:${c.bg_secondary}">
         <span class="pv-badge" style="background:${c.bg_tertiary};color:${c.fg_secondary}">Guide</span>
@@ -1036,7 +1095,9 @@ const PREVIEW_RENDERERS = {
     </div>`,
 
   accounts: c => `
-    <div class="pv-header" style="background:${c.bg_tertiary};color:${c.header_text}">Account Settings</div>
+    <div class="pv-header" style="background:${c.bg_tertiary};color:${c.header_text}">
+      <span class="pv-back">‹</span><span>Account Settings</span>
+    </div>
     <div class="pv-body" style="background:${c.bg_primary}">
       <div class="pv-section-title" style="color:${c.fg_secondary}">Account Information</div>
       <div class="pv-row" style="background:${c.bg_secondary}">
@@ -1057,7 +1118,9 @@ const PREVIEW_RENDERERS = {
     </div>`,
 
   accessibility: c => `
-    <div class="pv-header" style="background:${c.bg_tertiary};color:${c.header_text}">Accessibility</div>
+    <div class="pv-header" style="background:${c.bg_tertiary};color:${c.header_text}">
+      <span class="pv-back">‹</span><span>Accessibility</span>
+    </div>
     <div class="pv-body" style="background:${c.bg_primary}">
       <div class="pv-section-title" style="color:${c.fg_secondary}">Role Colors</div>
       <div class="pv-row" style="background:${c.bg_secondary}">
@@ -1076,7 +1139,9 @@ const PREVIEW_RENDERERS = {
     </div>`,
 
   advanced: c => `
-    <div class="pv-header" style="background:${c.bg_tertiary};color:${c.header_text}">Advanced</div>
+    <div class="pv-header" style="background:${c.bg_tertiary};color:${c.header_text}">
+      <span class="pv-back">‹</span><span>Advanced</span>
+    </div>
     <div class="pv-body" style="background:${c.bg_primary}">
       <div class="pv-row" style="background:${c.bg_secondary}">
         <div class="pv-row-label" style="color:${c.fg_primary}">Developer Mode</div>
@@ -1094,7 +1159,9 @@ const PREVIEW_RENDERERS = {
     </div>`,
 
   themes: c => `
-    <div class="pv-header" style="background:${c.bg_tertiary};color:${c.header_text}">Themes</div>
+    <div class="pv-header" style="background:${c.bg_tertiary};color:${c.header_text}">
+      <span class="pv-back">‹</span><span>Themes</span>
+    </div>
     <div class="pv-body" style="background:${c.bg_primary}">
       <div class="pv-card" style="background:${c.bg_secondary};display:flex;align-items:center;gap:.6rem">
         <div style="flex:1">
@@ -1110,10 +1177,17 @@ const PREVIEW_RENDERERS = {
     </div>`,
 
   profile: c => `
-    <div class="pv-header" style="background:${c.bg_tertiary};color:${c.header_text}">Profile</div>
+    <div class="pv-header" style="background:${c.bg_tertiary};color:${c.header_text}">
+      <span class="pv-back">‹</span><span>Profile</span>
+    </div>
     <div class="pv-body" style="background:${c.bg_primary}">
-      <div style="color:${c.fg_primary};font-weight:700;font-size:.95rem">Display Name</div>
-      <div style="color:${c.fg_secondary};font-size:.75rem;margin-bottom:.6rem">username</div>
+      <div style="display:flex;align-items:center;gap:.7rem;margin-bottom:.7rem">
+        <div class="pv-avatar" style="background:${c.accent};width:48px;height:48px;font-size:1rem">D</div>
+        <div>
+          <div style="color:${c.fg_primary};font-weight:700;font-size:.95rem">Display Name</div>
+          <div style="color:${c.fg_secondary};font-size:.75rem">username</div>
+        </div>
+      </div>
       <div class="pv-row" style="background:${c.accent};justify-content:center">
         <span style="color:${c.bg_primary};font-weight:700;font-size:.8rem">Edit Profile</span>
       </div>
@@ -1124,6 +1198,12 @@ const PREVIEW_RENDERERS = {
       <div class="pv-row" style="background:${c.bg_secondary}">
         <div class="pv-row-label" style="color:${c.fg_primary}">Member Since</div>
         <div class="pv-row-value" style="color:${c.fg_secondary}">Jan 2024</div>
+      </div>
+      <div class="pv-bottomnav" style="border-color:${c.bg_tertiary};color:${c.fg_secondary}">
+        <div><span class="pv-navicon">🎯</span>Quests</div>
+        <div><span class="pv-navicon">🛍️</span>Shop</div>
+        <div><span class="pv-navicon">💠</span>Nitro</div>
+        <div style="color:${c.accent}"><span class="pv-navicon">⚙️</span>Settings</div>
       </div>
     </div>`,
 };
@@ -1234,19 +1314,6 @@ function toggleJson() {
 // ═══════════════════════════════════════════════
 // ACTIONS
 // ═══════════════════════════════════════════════
-function downloadJson() {
-  const folder = currentFolder();
-  const a = document.createElement('a');
-  a.href = URL.createObjectURL(new Blob([buildJson()],{type:'application/json'}));
-  a.download = folder + '.json';
-  a.click();
-}
-
-function copyJson() {
-  const text = buildJson();
-  if (navigator.clipboard) navigator.clipboard.writeText(text).catch(()=>fbCopy(text));
-  else fbCopy(text);
-}
 function fbCopy(t) {
   const ta=document.createElement('textarea');ta.value=t;ta.style.cssText='position:fixed;opacity:0';
   document.body.appendChild(ta);ta.select();try{document.execCommand('copy')}catch(e){}
@@ -1260,7 +1327,6 @@ function updateSubmitCard() {
   const folder = currentFolder();
   const tag = `${folder}/${folder}.json`;
   document.getElementById('submit-filetag').textContent = tag;
-  document.getElementById('submit-filetag2').textContent = folder + '.json';
 }
 
 function submitTheme() {
@@ -1318,6 +1384,7 @@ function initBrowse() {
 // INIT
 // ═══════════════════════════════════════════════
 renderColorsBody();
+renderPreviewBody();
 updateSubmitCard();
 initBrowse();
 </script>
