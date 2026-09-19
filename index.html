@@ -1113,7 +1113,13 @@ function applyPreviewBackgroundImage(frame, c) {
     el.querySelectorAll(':scope > .pv-bg-layer, :scope > .pv-bg-tint').forEach(n => n.remove());
     if (!bgImageObjectUrl) return;
 
+    // position:relative alone doesn't form a stacking context (needs an
+    // explicit z-index too) — without it, these -1/-2 layers escape up to
+    // the nearest ancestor that IS a stacking context (here, the sticky
+    // .build-preview-col) and end up painting behind the whole frame
+    // instead of just behind this element's own text. z-index:0 fixes that.
     el.style.position = 'relative';
+    el.style.zIndex = '0';
     const blurRaw  = parseFloat(document.getElementById('bg-blur')?.value);
     const alphaRaw = parseFloat(document.getElementById('bg-alpha')?.value);
     const blurPx   = (isNaN(blurRaw) ? 0.5 : blurRaw) * 10;
