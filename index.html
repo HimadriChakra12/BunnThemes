@@ -405,6 +405,32 @@ details.fallback summary:hover{color:var(--fg2)}
       <div class="build-split">
         <div class="build-preview-col">
           <div class="notice">Tap around — server icons, channels, settings rows and messages are all clickable, so you can check colors in context, not just in a list.</div>
+          <div class="info-field">
+            <label>Background image (optional)</label>
+            <div class="img-upload" id="img-upload-zone" onclick="document.getElementById('bg-image-input').click()">
+              <input type="file" id="bg-image-input" accept="image/*" style="display:none" onchange="handleImageUpload(this)">
+              <div class="img-upload-empty" id="img-upload-empty">🖼️ Tap to choose an image</div>
+              <div class="img-upload-preview" id="img-upload-preview" style="display:none">
+                <img id="img-upload-thumb" src="" alt="background preview">
+                <div class="img-upload-meta">
+                  <div class="orig" id="img-upload-original"></div>
+                  <div class="renamed" id="img-upload-renamed"></div>
+                </div>
+                <button class="pill" style="border-radius:5px;flex-shrink:0" onclick="event.stopPropagation(); clearImage()">remove</button>
+              </div>
+            </div>
+            <p class="hint">Renamed to match your theme — <code class="file-tag" id="img-rename-hint">Folder.png</code> — shows live in the preview below.</p>
+            <div class="bg-tune-row" id="bg-tune-field" style="display:none">
+              <div class="bg-tune-col">
+                <label>Blur <span id="bg-blur-val">0.5</span></label>
+                <input type="range" id="bg-blur" min="0" max="1" step="0.05" value="0.5" oninput="document.getElementById('bg-blur-val').textContent=this.value; syncMeta()">
+              </div>
+              <div class="bg-tune-col">
+                <label>Opacity <span id="bg-alpha-val">0.7</span></label>
+                <input type="range" id="bg-alpha" min="0" max="1" step="0.05" value="0.7" oninput="document.getElementById('bg-alpha-val').textContent=this.value; syncMeta()">
+              </div>
+            </div>
+          </div>
           <div class="preview-frame" id="preview-frame"><!-- filled by JS --></div>
         </div>
         <div class="build-colors-col">
@@ -435,35 +461,9 @@ details.fallback summary:hover{color:var(--fg2)}
           </div>
           <p class="hint">No spaces. Your theme goes in <code class="file-tag">Folder/Folder.json</code></p>
         </div>
-        <div class="info-field">
-          <label>Background image (optional)</label>
-          <div class="img-upload" id="img-upload-zone" onclick="document.getElementById('bg-image-input').click()">
-            <input type="file" id="bg-image-input" accept="image/*" style="display:none" onchange="handleImageUpload(this)">
-            <div class="img-upload-empty" id="img-upload-empty">🖼️ Tap to choose an image</div>
-            <div class="img-upload-preview" id="img-upload-preview" style="display:none">
-              <img id="img-upload-thumb" src="" alt="background preview">
-              <div class="img-upload-meta">
-                <div class="orig" id="img-upload-original"></div>
-                <div class="renamed" id="img-upload-renamed"></div>
-              </div>
-              <button class="pill" style="border-radius:5px;flex-shrink:0" onclick="event.stopPropagation(); clearImage()">remove</button>
-            </div>
-          </div>
-          <p class="hint">Gets renamed to match your theme — <code class="file-tag" id="img-rename-hint">Folder.png</code> — and bundled with your submission.</p>
-          <div class="bg-tune-row" id="bg-tune-field" style="display:none">
-            <div class="bg-tune-col">
-              <label>Blur <span id="bg-blur-val">0.5</span></label>
-              <input type="range" id="bg-blur" min="0" max="1" step="0.05" value="0.5" oninput="document.getElementById('bg-blur-val').textContent=this.value; syncMeta()">
-            </div>
-            <div class="bg-tune-col">
-              <label>Opacity <span id="bg-alpha-val">0.7</span></label>
-              <input type="range" id="bg-alpha" min="0" max="1" step="0.05" value="0.7" oninput="document.getElementById('bg-alpha-val').textContent=this.value; syncMeta()">
-            </div>
-          </div>
-        </div>
         <p>Click the button below to open a pre-filled submission on GitHub with your theme's JSON attached. You'll need a free GitHub account to post it, but <strong>no forking, no uploading files, no pull request</strong> — a maintainer adds it to the repo for you. There's no separate download or copy step for the JSON — submitting is how you use your theme.</p>
         <p style="margin-top:.5rem">File that will be created: <span class="file-tag" id="submit-filetag">Theme/Theme.json</span></p>
-        <p class="hint" id="submit-image-note" style="display:none;margin-top:.3rem">Plus your image, renamed to <span class="file-tag" id="submit-image-tag">Theme.png</span> — since GitHub issues can't take a pre-attached file, submitting will also download just that renamed image so you can drag it into the issue that opens.</p>
+        <p class="hint" id="submit-image-note" style="display:none;margin-top:.3rem">Plus your image (added back in Build), renamed to <span class="file-tag" id="submit-image-tag">Theme.png</span> — since GitHub issues can't take a pre-attached file, submitting will also download just that renamed image so you can drag it into the issue that opens.</p>
         <div class="actions">
           <button class="btn btn-primary" onclick="submitTheme()">🚀 Submit theme</button>
         </div>
@@ -1092,6 +1092,47 @@ function refreshPreviewIfOpen() {
 
 function renderPreviewBody() { renderPhone(); }
 
+function hexToRgb(hex) {
+  hex = (hex || '#000000').replace('#', '');
+  if (hex.length === 3) hex = hex.split('').map(x => x + x).join('');
+  const num = parseInt(hex, 16) || 0;
+  return [(num >> 16) & 255, (num >> 8) & 255, num & 255];
+}
+
+// paints the uploaded background image (blurred + tinted, like Discord's
+// real per-server background) behind the chat surface and the DM list —
+// the two spots it's actually visible in the real app
+function applyPreviewBackgroundImage(frame, c) {
+  const targets = [];
+  const body = frame.querySelector('.pv-body');
+  const pane = frame.querySelector('.pv-pane');
+  if (body) targets.push(body);
+  if (pane) targets.push(pane);
+
+  targets.forEach(el => {
+    el.querySelectorAll(':scope > .pv-bg-layer, :scope > .pv-bg-tint').forEach(n => n.remove());
+    if (!bgImageObjectUrl) return;
+
+    el.style.position = 'relative';
+    const blurRaw  = parseFloat(document.getElementById('bg-blur')?.value);
+    const alphaRaw = parseFloat(document.getElementById('bg-alpha')?.value);
+    const blurPx   = (isNaN(blurRaw) ? 0.5 : blurRaw) * 10;
+    const tint     = isNaN(alphaRaw) ? 0.7 : alphaRaw;
+    const [r, g, b] = hexToRgb(c.bg_primary);
+
+    const bgLayer = document.createElement('div');
+    bgLayer.className = 'pv-bg-layer';
+    bgLayer.style.cssText = `position:absolute;inset:-10px;z-index:-2;background-image:url('${bgImageObjectUrl}');background-size:cover;background-position:center;filter:blur(${blurPx}px);`;
+
+    const tintLayer = document.createElement('div');
+    tintLayer.className = 'pv-bg-tint';
+    tintLayer.style.cssText = `position:absolute;inset:0;z-index:-1;background:rgba(${r},${g},${b},${tint});`;
+
+    el.prepend(tintLayer);
+    el.prepend(bgLayer);
+  });
+}
+
 function renderPhone() {
   const frame = document.getElementById('preview-frame');
   if (!frame) return;
@@ -1099,6 +1140,7 @@ function renderPhone() {
   frame.style.background = c.bg_primary;
   frame.style.color = c.fg_primary;
   frame.innerHTML = PV_SCREENS[pvScreen](c, pvCtx || {});
+  applyPreviewBackgroundImage(frame, c);
 }
 
 // little servers to click into — generic placeholder content, not real data
