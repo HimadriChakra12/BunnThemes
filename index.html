@@ -210,6 +210,23 @@ details.fallback summary:hover{color:var(--fg2)}
 .hint{font-size:.72rem;color:var(--muted);margin-top:.3rem}
 .hint code{background:var(--bg2);padding:.05rem .35rem;border-radius:4px;color:var(--green)}
 
+/* background image upload */
+.img-upload{
+  border:1px dashed var(--bg3);border-radius:8px;padding:.8rem;cursor:pointer;
+  background:var(--bg1);transition:border-color .12s;
+}
+.img-upload:hover{border-color:var(--accent)}
+.img-upload-empty{color:var(--muted);font-size:.82rem;text-align:center;padding:.4rem 0}
+.img-upload-preview{display:flex;align-items:center;gap:.7rem}
+.img-upload-preview img{width:48px;height:48px;border-radius:6px;object-fit:cover;flex-shrink:0;border:1px solid var(--bg2)}
+.img-upload-meta{flex:1;min-width:0}
+.img-upload-meta .orig{font-size:.72rem;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.img-upload-meta .renamed{font-size:.78rem;color:var(--accent);font-weight:600;margin-top:.1rem}
+.bg-tune-row{display:flex;gap:1.2rem;margin-top:.3rem}
+.bg-tune-col{flex:1}
+.bg-tune-col label{display:flex;justify-content:space-between;font-size:.7rem;color:var(--muted);margin-bottom:.25rem}
+.bg-tune-col input[type=range]{width:100%;accent-color:var(--accent)}
+
 /* preview — an actual clickable mini "app" styled with the live theme */
 .preview-frame{
   border-radius:18px;overflow:hidden;
@@ -284,6 +301,22 @@ details.fallback summary:hover{color:var(--fg2)}
 }
 .pv-userbar-name{font-size:.78rem;font-weight:700}
 .pv-userbar-status{font-size:.68rem;opacity:.7}
+
+/* extra chrome for higher-fidelity screens */
+.pv-close{font-size:1.15rem;line-height:1;opacity:.85;cursor:pointer}
+.pv-close:hover{opacity:1}
+.pv-searchbox{
+  display:flex;align-items:center;gap:.5rem;margin:.2rem .8rem .7rem;padding:.45rem .7rem;
+  border-radius:8px;border:1px solid;font-size:.78rem;
+}
+.pv-icon-row-icon{width:20px;text-align:center;flex-shrink:0;font-size:.9rem}
+.pv-chip-row{display:flex;gap:.5rem;margin-bottom:.7rem}
+.pv-chip-btn{font-size:.72rem;padding:.28rem .6rem;border-radius:7px;display:flex;align-items:center;gap:.3rem}
+.pv-upper-label{font-size:.65rem;text-transform:uppercase;letter-spacing:.06em;opacity:.65;margin:.3rem 0 .5rem}
+.pv-slider-track{height:4px;border-radius:2px;position:relative;flex:1;margin:0 .6rem}
+.pv-slider-thumb{position:absolute;top:50%;width:14px;height:14px;border-radius:50%;transform:translate(-50%,-50%)}
+.pv-tiny-btn{width:26px;height:26px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:.85rem;flex-shrink:0}
+.pv-cover{height:56px;margin:-.75rem -.9rem .5rem;position:relative}
 /* browse view (reused from index.html) */
 #view-browse{padding:2rem 1.25rem 5rem}
 #view-browse header{max-width:720px;margin:0 auto 2rem}
@@ -402,8 +435,35 @@ details.fallback summary:hover{color:var(--fg2)}
           </div>
           <p class="hint">No spaces. Your theme goes in <code class="file-tag">Folder/Folder.json</code></p>
         </div>
-        <p>Click the button below to open a pre-filled submission on GitHub with your theme's JSON attached. You'll need a free GitHub account to post it, but <strong>no forking, no uploading files, no pull request</strong> — a maintainer adds it to the repo for you. There's no separate download or copy step — submitting is how you use your theme.</p>
+        <div class="info-field">
+          <label>Background image (optional)</label>
+          <div class="img-upload" id="img-upload-zone" onclick="document.getElementById('bg-image-input').click()">
+            <input type="file" id="bg-image-input" accept="image/*" style="display:none" onchange="handleImageUpload(this)">
+            <div class="img-upload-empty" id="img-upload-empty">🖼️ Tap to choose an image</div>
+            <div class="img-upload-preview" id="img-upload-preview" style="display:none">
+              <img id="img-upload-thumb" src="" alt="background preview">
+              <div class="img-upload-meta">
+                <div class="orig" id="img-upload-original"></div>
+                <div class="renamed" id="img-upload-renamed"></div>
+              </div>
+              <button class="pill" style="border-radius:5px;flex-shrink:0" onclick="event.stopPropagation(); clearImage()">remove</button>
+            </div>
+          </div>
+          <p class="hint">Gets renamed to match your theme — <code class="file-tag" id="img-rename-hint">Folder.png</code> — and bundled with your submission.</p>
+          <div class="bg-tune-row" id="bg-tune-field" style="display:none">
+            <div class="bg-tune-col">
+              <label>Blur <span id="bg-blur-val">0.5</span></label>
+              <input type="range" id="bg-blur" min="0" max="1" step="0.05" value="0.5" oninput="document.getElementById('bg-blur-val').textContent=this.value; syncMeta()">
+            </div>
+            <div class="bg-tune-col">
+              <label>Opacity <span id="bg-alpha-val">0.7</span></label>
+              <input type="range" id="bg-alpha" min="0" max="1" step="0.05" value="0.7" oninput="document.getElementById('bg-alpha-val').textContent=this.value; syncMeta()">
+            </div>
+          </div>
+        </div>
+        <p>Click the button below to open a pre-filled submission on GitHub with your theme's JSON attached. You'll need a free GitHub account to post it, but <strong>no forking, no uploading files, no pull request</strong> — a maintainer adds it to the repo for you. There's no separate download or copy step for the JSON — submitting is how you use your theme.</p>
         <p style="margin-top:.5rem">File that will be created: <span class="file-tag" id="submit-filetag">Theme/Theme.json</span></p>
+        <p class="hint" id="submit-image-note" style="display:none;margin-top:.3rem">Plus your image, renamed to <span class="file-tag" id="submit-image-tag">Theme.png</span> — since GitHub issues can't take a pre-attached file, submitting will also download just that renamed image so you can drag it into the issue that opens.</p>
         <div class="actions">
           <button class="btn btn-primary" onclick="submitTheme()">🚀 Submit theme</button>
         </div>
@@ -823,6 +883,8 @@ let dc = { ...PRESETS.gruvbox.dark };
 let lc = { ...PRESETS.gruvbox.light };
 let activePreset = 'gruvbox';
 let jsonOpen = false;
+let bgImageFile = null;
+let bgImageObjectUrl = null;
 
 function C() { return mode === 'dark' ? dc : lc; }
 
@@ -930,6 +992,7 @@ function setMode(m) {
 function syncMeta() {
   refreshJsonOutput();
   refreshPreviewIfOpen();
+  updateImageRenameLabels();
 }
 function autoFolder() {
   const name = document.getElementById('meta-name')?.value.trim()||'';
@@ -938,6 +1001,66 @@ function autoFolder() {
   if (el && slug) el.value = slug;
   syncMeta();
 }
+
+// ═══════════════════════════════════════════════
+// BACKGROUND IMAGE — picked file gets renamed to match the theme/folder
+// name, bundled into the JSON's background.url, and downloaded (renamed)
+// alongside the submit step so it can be dragged into the GitHub issue.
+// ═══════════════════════════════════════════════
+function bgImageExt() {
+  if (!bgImageFile) return 'png';
+  const m = bgImageFile.name.match(/\.([a-zA-Z0-9]+)$/);
+  return m ? m[1].toLowerCase() : 'png';
+}
+function bgImageRenamedName() {
+  return bgImageFile ? currentFolder() + '.' + bgImageExt() : '';
+}
+function updateImageRenameLabels() {
+  if (!bgImageFile) return;
+  const name = bgImageRenamedName();
+  const renamedEl = document.getElementById('img-upload-renamed');
+  const hintEl = document.getElementById('img-rename-hint');
+  const tagEl = document.getElementById('submit-image-tag');
+  if (renamedEl) renamedEl.textContent = '→ ' + name;
+  if (hintEl) hintEl.textContent = name;
+  if (tagEl) tagEl.textContent = name;
+}
+
+function handleImageUpload(input) {
+  const file = input.files && input.files[0];
+  if (!file) return;
+  if (!file.type.startsWith('image/')) {
+    alert('Please choose an image file.');
+    input.value = '';
+    return;
+  }
+  bgImageFile = file;
+  if (bgImageObjectUrl) URL.revokeObjectURL(bgImageObjectUrl);
+  bgImageObjectUrl = URL.createObjectURL(file);
+
+  document.getElementById('img-upload-thumb').src = bgImageObjectUrl;
+  document.getElementById('img-upload-original').textContent = 'Original: ' + file.name;
+  document.getElementById('img-upload-empty').style.display = 'none';
+  document.getElementById('img-upload-preview').style.display = 'flex';
+  document.getElementById('bg-tune-field').style.display = '';
+  document.getElementById('submit-image-note').style.display = '';
+
+  updateImageRenameLabels();
+  syncMeta();
+}
+
+function clearImage() {
+  bgImageFile = null;
+  if (bgImageObjectUrl) { URL.revokeObjectURL(bgImageObjectUrl); bgImageObjectUrl = null; }
+  const input = document.getElementById('bg-image-input');
+  if (input) input.value = '';
+  document.getElementById('img-upload-empty').style.display = '';
+  document.getElementById('img-upload-preview').style.display = 'none';
+  document.getElementById('bg-tune-field').style.display = 'none';
+  document.getElementById('submit-image-note').style.display = 'none';
+  syncMeta();
+}
+
 
 // ═══════════════════════════════════════════════
 // PREVIEW — a small clickable "app" with real navigation: tap a server
@@ -1021,7 +1144,11 @@ const PV_SCREENS = {
         `).join('')}
       </div>
       <div class="pv-pane" style="background:${c.bg_secondary}">
-        <div class="pv-pane-header" style="color:${c.header_text}">Messages</div>
+        <div class="pv-pane-header" style="color:${c.header_text};display:flex;align-items:center">
+          Messages
+          <span style="margin-left:auto;font-size:.85rem;color:${c.fg_secondary}">＋</span>
+        </div>
+        <div class="pv-searchbox" style="border-color:${c.bg_tertiary};color:${c.fg_secondary};background:${c.bg_tertiary}44;margin:0 .6rem .6rem">🔍 Add Friends</div>
         <div style="padding:0 .6rem">
           <div class="pv-row pv-clickable" style="background:${c.bg_primary}" onclick="pvGoTo('chat',{server:'study',channel:'general-chat'})">
             <div class="pv-avatar" style="background:${c.accent}">A</div>
@@ -1050,13 +1177,15 @@ const PV_SCREENS = {
       <span style="color:${c.fg_secondary}">🔔</span>
     </div>`,
 
-  // ── CHANNEL LIST: rail (current server highlighted) + channel groups ──
+  // ── CHANNEL LIST: rail + search + boosts + channel groups (Server Channel List.png) ──
   channelList: (c, ctx) => {
     const server = PV_SERVERS[ctx.server] || PV_SERVERS.study;
     return `
     <div class="pv-header" style="background:${c.bg_tertiary};color:${c.header_text}">
       <span class="pv-back" onclick="pvGoBack()">‹</span>
-      <span>${server.name}</span>
+      <span>${server.name} ›</span>
+      <span class="pv-hsearch" style="margin-left:auto">👤➕</span>
+      <span class="pv-hsearch">📅</span>
     </div>
     <div class="pv-shell">
       <div class="pv-rail" style="background:${c.bg_tertiary}">
@@ -1066,8 +1195,14 @@ const PV_SCREENS = {
         `).join('')}
       </div>
       <div class="pv-pane" style="background:${c.bg_secondary}">
+        <div class="pv-searchbox" style="border-color:${c.bg_tertiary};color:${c.fg_secondary}">🔍 Search</div>
+        <div class="pv-row" style="background:none;padding:.3rem .8rem">
+          <span style="font-size:.9rem">🛡️</span>
+          <div class="pv-row-label" style="color:${c.fg_secondary}">Server Boosts</div>
+          <span class="pv-badge" style="background:${c.accent};color:${c.bg_primary};font-weight:700">NEW</span>
+        </div>
         ${server.groups.map(g => `
-          <div class="pv-cat-label" style="color:${c.fg_secondary}">${g.cat}</div>
+          <div class="pv-cat-label" style="color:${c.fg_secondary}">⌄ ${g.cat}</div>
           ${g.channels.map(ch => `
             <div class="pv-ch-row pv-clickable" style="color:${c.fg_secondary}"
                  onclick="pvGoTo('${ch.type==='forum'?'forum':'chat'}',{server:'${ctx.server}',channel:'${ch.id}'})">
@@ -1079,113 +1214,143 @@ const PV_SCREENS = {
     </div>`;
   },
 
-  // ── CHAT: header (back, name, search) + messages + input ──
+  // ── CHAT: header (back, name, online, search) + messages + input ──
   chat: (c, ctx) => `
     <div class="pv-header" style="background:${c.bg_tertiary};color:${c.header_text}">
       <span class="pv-back" onclick="pvGoBack()">‹</span>
-      <span># ${ctx.channel || 'general-chat'}</span>
-      <span class="pv-sub" style="color:${c.fg_secondary}">3 online</span>
+      <div>
+        <div># ${ctx.channel || 'general-chat'}</div>
+        <div class="pv-sub" style="color:${c.fg_secondary};font-weight:400">🟢 3 Online</div>
+      </div>
       <span class="pv-hsearch" onclick="pvGoTo('search',ctx)">🔍</span>
     </div>
     <div class="pv-body" style="background:${c.bg_primary}">
       <div class="pv-msg pv-msg-row pv-clickable" onclick="pvGoTo('profile',{name:'Alex',initial:'A',color:'accent'})">
         <div class="pv-avatar" style="background:${c.accent}">A</div>
         <div>
-          <div class="pv-msg-name" style="color:${c.accent}">Alex</div>
+          <div class="pv-msg-name" style="color:${c.accent}">Alex <span style="color:${c.fg_secondary};font-weight:400;font-size:.68rem">8:52 PM</span></div>
           <div class="pv-msg-text" style="color:${c.fg_primary}">just pushed the update, check the <span class="pv-link" style="color:${c.link}">changelog</span> when you get a sec</div>
         </div>
       </div>
       <div class="pv-msg pv-msg-row pv-clickable" onclick="pvGoTo('profile',{name:'Sam',initial:'S',color:'link'})">
         <div class="pv-avatar" style="background:${c.link}">S</div>
         <div>
-          <div class="pv-msg-name" style="color:${c.link}">Sam</div>
+          <div class="pv-msg-name" style="color:${c.link}">Sam <span style="color:${c.fg_secondary};font-weight:400;font-size:.68rem">9:01 PM</span></div>
           <div class="pv-msg-text" style="color:${c.fg_secondary}">looks good, one thing though — build failed on CI</div>
         </div>
       </div>
       <div class="pv-msg pv-msg-row pv-clickable" onclick="pvGoTo('profile',{name:'Jordan',initial:'J',color:'danger'})">
         <div class="pv-avatar" style="background:${c.danger}">J</div>
         <div>
-          <div class="pv-msg-name" style="color:${c.danger}">Jordan</div>
+          <div class="pv-msg-name" style="color:${c.danger}">Jordan <span style="color:${c.fg_secondary};font-weight:400;font-size:.68rem">9:04 PM</span></div>
           <div class="pv-msg-text" style="color:${c.fg_primary}">⚠️ error in the danger color, red text should show here</div>
         </div>
       </div>
       <div class="pv-msg pv-msg-row pv-clickable" onclick="pvGoTo('profile',{name:'Riley',initial:'R',color:'positive'})">
         <div class="pv-avatar" style="background:${c.positive}">R</div>
         <div>
-          <div class="pv-msg-name" style="color:${c.positive}">Riley</div>
+          <div class="pv-msg-name" style="color:${c.positive}">Riley <span style="color:${c.fg_secondary};font-weight:400;font-size:.68rem">9:06 PM</span></div>
           <div class="pv-msg-text" style="color:${c.fg_primary}">✅ all fixed, tests passing now</div>
         </div>
       </div>
     </div>
-    <div style="padding:.5rem .9rem .75rem">
-      <div class="pv-row" style="background:${c.input_bg};color:${c.fg_secondary}88;margin:0">Message #${ctx.channel || 'general-chat'}</div>
+    <div style="padding:.5rem .9rem .75rem;display:flex;align-items:center;gap:.5rem">
+      <span style="color:${c.fg_secondary}">＋</span>
+      <div class="pv-row" style="background:${c.input_bg};color:${c.fg_secondary}88;margin:0;flex:1">Message #${ctx.channel || 'general-chat'}</div>
+      <span style="color:${c.fg_secondary}">🎤</span>
     </div>`,
 
-  // ── FORUM ──
+  // ── FORUM (Forum.png) ──
   forum: (c, ctx) => `
     <div class="pv-header" style="background:${c.bg_tertiary};color:${c.header_text}">
       <span class="pv-back" onclick="pvGoBack()">‹</span>
-      <span>${ctx.channel || 'resources-forum'}</span>
+      <span>💬 ${ctx.channel || 'resources-forum'} ›</span>
+      <span class="pv-hsearch">🔍</span>
     </div>
     <div class="pv-body" style="background:${c.bg_primary}">
+      <div class="pv-chip-row">
+        <span class="pv-chip-btn" style="background:${c.bg_secondary};color:${c.fg_secondary}">↕ Sort &amp; View</span>
+        <span class="pv-chip-btn" style="background:${c.bg_secondary};color:${c.fg_secondary};margin-left:auto">🏷️ Tags</span>
+      </div>
+      <div class="pv-upper-label" style="color:${c.fg_secondary}">Older Posts</div>
       <div class="pv-card pv-clickable" style="background:${c.bg_secondary}">
-        <span class="pv-badge" style="background:${c.bg_tertiary};color:${c.fg_secondary}">Guide</span>
-        <span class="pv-badge" style="background:${c.bg_tertiary};color:${c.fg_secondary}">+2</span>
-        <div style="color:${c.accent};font-size:.82rem;font-weight:700;margin-top:.4rem">Getting started resources</div>
-        <div style="color:${c.fg_secondary};font-size:.76rem;margin-top:.15rem">A running list of useful links and guides for newcomers...</div>
-        <div style="color:${c.fg_secondary};font-size:.72rem;margin-top:.4rem">💬 22 &nbsp; 🔥 2</div>
+        <span class="pv-badge" style="background:${c.bg_tertiary};color:${c.fg_secondary}">Physics</span>
+        <span class="pv-badge" style="background:${c.bg_tertiary};color:${c.fg_secondary}">Bangla</span>
+        <span class="pv-badge" style="background:${c.bg_tertiary};color:${c.fg_secondary}">+3</span>
+        <div style="color:${c.fg_secondary};font-size:.68rem;margin-top:.4rem">Alex &nbsp;›30d ago</div>
+        <div style="color:${c.fg_primary};font-size:.82rem;font-weight:700;margin-top:.15rem">My resource pull of all time</div>
+        <div style="color:${c.fg_secondary};font-size:.76rem;margin-top:.15rem">Chemistry for practice; a big playlist of everything I used...</div>
+        <div style="color:${c.fg_secondary};font-size:.72rem;margin-top:.4rem">💬 22 &nbsp; <span class="pv-badge" style="background:${c.accent}22;color:${c.accent}">🎉 2</span></div>
       </div>
       <div class="pv-card pv-clickable" style="background:${c.bg_secondary}">
         <span class="pv-badge" style="background:${c.bg_tertiary};color:${c.fg_secondary}">English</span>
-        <div style="color:${c.link};font-size:.82rem;font-weight:700;margin-top:.4rem">Formatting tips thread</div>
+        <div style="color:${c.fg_secondary};font-size:.68rem;margin-top:.4rem">Sam &nbsp;›30d ago</div>
+        <div style="color:${c.link};font-size:.82rem;font-weight:700;margin-top:.15rem">Formatting tips thread</div>
         <div style="color:${c.fg_secondary};font-size:.72rem;margin-top:.4rem">💬 7</div>
       </div>
     </div>`,
 
-  // ── SEARCH ──
+  // ── SEARCH (Server Search.png) ──
   search: (c, ctx) => `
     <div class="pv-header" style="background:${c.bg_tertiary};color:${c.header_text}">
       <span class="pv-back" onclick="pvGoBack()">‹</span>
-      <span>Search in Server</span>
+      <div class="pv-searchbox" style="border-color:${c.fg_secondary}66;color:${c.fg_secondary};margin:0;flex:1">🔍 Search in ${(PV_SERVERS[ctx.server]||PV_SERVERS.study).name}</div>
     </div>
-    <div class="pv-body" style="background:${c.bg_primary}">
-      <div class="pv-tabs-inline">
+    <div class="pv-body" style="background:${c.bg_primary};padding-top:0">
+      <div class="pv-tabs-inline" style="overflow-x:auto;flex-wrap:nowrap">
         <span class="pv-tab-inline" style="color:${c.accent};border-color:${c.accent};font-weight:700">Recent</span>
         <span class="pv-tab-inline" style="color:${c.fg_secondary}">Members</span>
+        <span class="pv-tab-inline" style="color:${c.fg_secondary}">Channels</span>
         <span class="pv-tab-inline" style="color:${c.fg_secondary}">Media</span>
+        <span class="pv-tab-inline" style="color:${c.fg_secondary}">Pins</span>
         <span class="pv-tab-inline" style="color:${c.fg_secondary}">Links</span>
       </div>
-      <div class="pv-row pv-clickable" style="background:${c.bg_secondary};color:${c.fg_primary}" onclick="pvGoTo('chat',ctx)"># resources <span style="color:${c.fg_secondary};margin-left:auto;font-size:.7rem">active 3h ago</span></div>
-      <div class="pv-row pv-clickable" style="background:${c.bg_secondary};color:${c.fg_primary}" onclick="pvGoTo('chat',ctx)"># general <span style="color:${c.fg_secondary};margin-left:auto;font-size:.7rem">active 1d ago</span></div>
-      <div class="pv-grid" style="margin-top:.5rem">
+      <div class="pv-upper-label" style="color:${c.fg_secondary}">Suggested</div>
+      <div class="pv-row pv-clickable" style="background:${c.bg_secondary};color:${c.fg_primary}" onclick="pvGoTo('chat',ctx)"># resources <span style="color:${c.fg_secondary};margin-left:auto;font-size:.7rem">Active 3h ago</span></div>
+      <div class="pv-row pv-clickable" style="background:${c.bg_secondary};color:${c.fg_primary}" onclick="pvGoTo('chat',ctx)"># general <span style="color:${c.fg_secondary};margin-left:auto;font-size:.7rem">Active 1d ago</span></div>
+      <div style="display:flex;align-items:center;margin:.7rem 0 .4rem">
+        <span class="pv-upper-label" style="color:${c.fg_secondary};margin:0">Photos &amp; Media</span>
+        <span style="margin-left:auto;color:${c.accent};font-size:.72rem">View all</span>
+      </div>
+      <div class="pv-grid">
         <div style="background:${c.bg_tertiary}"></div><div style="background:${c.bg_secondary}"></div><div style="background:${c.accent}55"></div>
+        <div style="background:${c.bg_secondary}"></div><div style="background:${c.bg_tertiary}"></div><div style="background:${c.link}44"></div>
       </div>
     </div>`,
 
-  // ── PROFILE (reached by tapping a name/avatar in chat) ──
+  // ── PROFILE (Account Section.png — reached by tapping a name/avatar in chat) ──
   profile: (c, ctx) => `
     <div class="pv-header" style="background:${c.bg_tertiary};color:${c.header_text}">
-      <span class="pv-back" onclick="pvGoBack()">‹</span>
-      <span>Profile</span>
+      <span class="pv-close" onclick="pvGoBack()">✕</span>
     </div>
-    <div class="pv-body" style="background:${c.bg_primary}">
+    <div class="pv-body" style="background:${c.bg_primary};padding-top:0">
+      <div class="pv-cover" style="background:linear-gradient(135deg,${c[ctx.color]||c.accent}55,${c.bg_tertiary})"></div>
       <div style="display:flex;align-items:center;gap:.7rem;margin-bottom:.7rem">
-        <div class="pv-avatar" style="background:${c[ctx.color]||c.accent};width:48px;height:48px;font-size:1rem">${ctx.initial||'U'}</div>
+        <div class="pv-avatar" style="background:${c[ctx.color]||c.accent};width:52px;height:52px;font-size:1.1rem;border:3px solid ${c.bg_primary};margin-top:-28px">${ctx.initial||'U'}</div>
         <div>
           <div style="color:${c.fg_primary};font-weight:700;font-size:.95rem">${ctx.name||'User'}</div>
-          <div style="color:${c.fg_secondary};font-size:.75rem">@${(ctx.name||'user').toLowerCase()}</div>
+          <div style="color:${c.fg_secondary};font-size:.75rem">@${(ctx.name||'user').toLowerCase()} · Member since Jan 2024</div>
         </div>
       </div>
       <div class="pv-row" style="background:${c.accent};justify-content:center">
-        <span style="color:${c.bg_primary};font-weight:700;font-size:.8rem">Edit Profile</span>
+        <span style="color:${c.bg_primary};font-weight:700;font-size:.8rem">✏️ Edit Profile</span>
       </div>
       <div class="pv-tabs-inline" style="margin-top:.7rem">
         <span class="pv-tab-inline" style="color:${c.accent};border-color:${c.accent};font-weight:700">Main</span>
         <span class="pv-tab-inline" style="color:${c.fg_secondary}">Wishlist</span>
       </div>
       <div class="pv-row" style="background:${c.bg_secondary}">
-        <div class="pv-row-label" style="color:${c.fg_primary}">Member Since</div>
-        <div class="pv-row-value" style="color:${c.fg_secondary}">Jan 2024</div>
+        <span class="pv-icon-row-icon">💠</span>
+        <div class="pv-row-label" style="color:${c.fg_primary}">Orbs Balance</div>
+        <div class="pv-row-value" style="color:${c.fg_secondary}">3650</div>
+      </div>
+      <div class="pv-row" style="background:${c.bg_secondary}">
+        <div class="pv-row-label" style="color:${c.fg_primary}">Connections</div>
+        <div class="pv-row-value" style="color:${c.link}">↗</div>
+      </div>
+      <div class="pv-row" style="background:${c.bg_secondary}">
+        <div class="pv-row-label" style="color:${c.fg_primary}">Friends</div>
+        <div class="pv-row-value" style="color:${c.fg_secondary}">›</div>
       </div>
     </div>
     <div class="pv-bottomnav" style="border-color:${c.bg_tertiary};color:${c.fg_secondary}">
@@ -1195,33 +1360,60 @@ const PV_SCREENS = {
       <div class="pv-clickable" style="color:${c.accent}" onclick="pvGoTo('settingsList')"><span class="pv-navicon">⚙️</span>Settings</div>
     </div>`,
 
-  // ── SETTINGS LIST ──
+  // ── SETTINGS LIST (Settings.png) ──
   settingsList: c => `
     <div class="pv-header" style="background:${c.bg_tertiary};color:${c.header_text}">
-      <span class="pv-back" onclick="pvGoBack()">‹</span>
+      <span class="pv-close" onclick="pvGoBack()">✕</span>
       <span>Settings</span>
     </div>
-    <div class="pv-body" style="background:${c.bg_primary}">
-      <div class="pv-section-title" style="color:${c.fg_secondary}">Account Settings</div>
+    <div class="pv-body" style="background:${c.bg_primary};padding-top:0">
+      <div class="pv-searchbox" style="border-color:${c.fg_secondary}66;color:${c.fg_secondary};margin:.2rem 0 .8rem">🔍 Search</div>
+      <div class="pv-section-title" style="color:${c.fg_secondary};margin-top:0">Account Settings</div>
+      <div class="pv-row" style="background:${c.bg_secondary}">
+        <span class="pv-icon-row-icon">🎫</span>
+        <div class="pv-row-label" style="color:${c.accent};font-weight:700">Get Nitro</div><div class="pv-row-value" style="color:${c.fg_secondary}">›</div>
+      </div>
       <div class="pv-row pv-clickable" style="background:${c.bg_secondary}" onclick="pvGoTo('account')">
+        <span class="pv-icon-row-icon">👤</span>
         <div class="pv-row-label" style="color:${c.fg_primary}">Account</div><div class="pv-row-value" style="color:${c.fg_secondary}">›</div>
       </div>
+      <div class="pv-row" style="background:${c.bg_secondary}">
+        <span class="pv-icon-row-icon">🛡️</span>
+        <div class="pv-row-label" style="color:${c.fg_primary}">Data &amp; Privacy</div><div class="pv-row-value" style="color:${c.fg_secondary}">›</div>
+      </div>
+      <div class="pv-row" style="background:${c.bg_secondary}">
+        <span class="pv-icon-row-icon">🔑</span>
+        <div class="pv-row-label" style="color:${c.fg_primary}">Authorized Apps</div><div class="pv-row-value" style="color:${c.fg_secondary}">›</div>
+      </div>
+      <div class="pv-section-title" style="color:${c.fg_secondary}">App Settings</div>
       <div class="pv-row pv-clickable" style="background:${c.bg_secondary}" onclick="pvGoTo('accessibility')">
+        <span class="pv-icon-row-icon">👁️</span>
         <div class="pv-row-label" style="color:${c.fg_primary}">Accessibility</div><div class="pv-row-value" style="color:${c.fg_secondary}">›</div>
       </div>
-      <div class="pv-row pv-clickable" style="background:${c.bg_secondary}" onclick="pvGoTo('advanced')">
-        <div class="pv-row-label" style="color:${c.fg_primary}">Advanced</div><div class="pv-row-value" style="color:${c.fg_secondary}">›</div>
-      </div>
       <div class="pv-row pv-clickable" style="background:${c.bg_secondary}" onclick="pvGoTo('themes')">
+        <span class="pv-icon-row-icon">🎨</span>
         <div class="pv-row-label" style="color:${c.fg_primary}">Themes</div><div class="pv-row-value" style="color:${c.fg_secondary}">›</div>
+      </div>
+      <div class="pv-row pv-clickable" style="background:${c.bg_secondary}" onclick="pvGoTo('advanced')">
+        <span class="pv-icon-row-icon">⚙️</span>
+        <div class="pv-row-label" style="color:${c.fg_primary}">Advanced</div><div class="pv-row-value" style="color:${c.fg_secondary}">›</div>
       </div>
     </div>`,
 
+  // ── ACCOUNT (Account.png) ──
   account: c => `
     <div class="pv-header" style="background:${c.bg_tertiary};color:${c.header_text}">
       <span class="pv-back" onclick="pvGoBack()">‹</span><span>Account</span>
     </div>
-    <div class="pv-body" style="background:${c.bg_primary}">
+    <div class="pv-body" style="background:${c.bg_primary};padding-top:0">
+      <div class="pv-tabs-inline" style="margin-top:.3rem">
+        <span class="pv-tab-inline" style="color:${c.fg_primary};border-color:${c.accent};font-weight:700;background:${c.bg_secondary};padding:.35rem .7rem;border-radius:6px 6px 0 0">Security</span>
+        <span class="pv-tab-inline" style="color:${c.fg_secondary}">Standing</span>
+      </div>
+      <div class="pv-row" style="background:${c.positive}14;border:1px solid ${c.positive};align-items:flex-start">
+        <span class="pv-icon-row-icon" style="color:${c.positive}">ⓘ</span>
+        <div class="pv-row-label" style="color:${c.fg_secondary}">Looking for accounts you've blocked or ignored? <span style="color:${c.positive}">Go to settings</span></div>
+      </div>
       <div class="pv-section-title" style="color:${c.fg_secondary}">Account Information</div>
       <div class="pv-row" style="background:${c.bg_secondary}">
         <div class="pv-row-label" style="color:${c.fg_primary}">Username</div><div class="pv-row-value" style="color:${c.fg_secondary}">›</div>
@@ -1230,69 +1422,137 @@ const PV_SCREENS = {
         <div class="pv-row-label" style="color:${c.fg_primary}">Display Name</div><div class="pv-row-value" style="color:${c.fg_secondary}">›</div>
       </div>
       <div class="pv-row" style="background:${c.bg_secondary}">
+        <div class="pv-row-label" style="color:${c.fg_primary}">Email</div><div class="pv-row-value" style="color:${c.fg_secondary}">›</div>
+      </div>
+      <div class="pv-row" style="background:${c.accent}12;border:1px solid ${c.accent}">
+        <span class="pv-icon-row-icon">🔑</span>
+        <div style="flex:1">
+          <div style="color:${c.fg_primary};font-weight:700;font-size:.8rem">Forget about your password</div>
+          <div style="color:${c.fg_secondary};font-size:.68rem;margin-top:.1rem">Add a passkey and login with a single tap.</div>
+        </div>
+      </div>
+      <div class="pv-section-title" style="color:${c.fg_secondary}">How you sign in</div>
+      <div class="pv-row" style="background:${c.bg_secondary}">
         <div class="pv-row-label" style="color:${c.fg_primary}">Password</div><div class="pv-row-value" style="color:${c.fg_secondary}">›</div>
       </div>
-      <div class="pv-row" style="background:${c.accent}18;border:1px solid ${c.accent}">
-        <div class="pv-row-label" style="color:${c.accent};font-weight:700">Get started with passkeys</div>
+      <div class="pv-row" style="background:${c.bg_secondary}">
+        <div class="pv-row-label" style="color:${c.fg_primary}">Security Keys</div><div class="pv-row-value" style="color:${c.fg_secondary}">0 added ›</div>
       </div>
     </div>`,
 
+  // ── ACCESSIBILITY (Accesability.png) ──
   accessibility: c => `
     <div class="pv-header" style="background:${c.bg_tertiary};color:${c.header_text}">
       <span class="pv-back" onclick="pvGoBack()">‹</span><span>Accessibility</span>
     </div>
-    <div class="pv-body" style="background:${c.bg_primary}">
-      <div class="pv-section-title" style="color:${c.fg_secondary}">Role Colors</div>
+    <div class="pv-body" style="background:${c.bg_primary};padding-top:0">
+      <div class="pv-section-title" style="color:${c.fg_secondary};margin-top:.3rem">Role Colors</div>
       <div class="pv-row" style="background:${c.bg_secondary}">
         <div class="pv-radio on" style="border-color:${c.accent};color:${c.accent}"></div>
         <div class="pv-row-label" style="color:${c.fg_primary}">Show role colors in names</div>
       </div>
       <div class="pv-row" style="background:${c.bg_secondary}">
         <div class="pv-radio" style="border-color:${c.fg_secondary}"></div>
+        <div class="pv-row-label" style="color:${c.fg_primary}">Show role colors next to names</div>
+      </div>
+      <div class="pv-row" style="background:${c.bg_secondary}">
+        <div class="pv-radio" style="border-color:${c.fg_secondary}"></div>
         <div class="pv-row-label" style="color:${c.fg_primary}">Don't show role colors</div>
       </div>
-      <div class="pv-section-title" style="color:${c.fg_secondary}">Display Name Styles</div>
+      <div style="color:${c.fg_secondary};font-size:.7rem;margin-bottom:.8rem">Learn more about <span style="color:${c.positive}">role colors and accessibility</span>.</div>
+
+      <div class="pv-section-title" style="color:${c.fg_secondary}">Official Messages</div>
       <div class="pv-row" style="background:${c.bg_secondary}">
-        <div class="pv-row-label" style="color:${c.fg_primary}">Enabled</div>
+        <div class="pv-radio on" style="border-color:${c.accent};color:${c.accent}"></div>
+        <div class="pv-row-label" style="color:${c.fg_primary}">Default</div>
+      </div>
+      <div class="pv-row" style="background:${c.bg_secondary}">
+        <div class="pv-radio" style="border-color:${c.fg_secondary}"></div>
+        <div class="pv-row-label" style="color:${c.fg_primary}">No styling</div>
+      </div>
+
+      <div class="pv-row" style="background:${c.bg_secondary};margin-top:.9rem">
+        <div class="pv-row-label" style="color:${c.fg_primary}">Display Name Styles</div>
         <div class="pv-toggle" style="background:${c.accent}"></div>
+      </div>
+
+      <div class="pv-card" style="background:${c.bg_secondary};margin-top:.2rem">
+        <div style="display:flex;align-items:center;margin-bottom:.5rem">
+          <span style="color:${c.fg_primary};font-weight:700;font-size:.8rem">Contrast</span>
+          <span class="pv-badge" style="background:${c.accent};color:${c.bg_primary};margin-left:.4rem">BETA</span>
+          <span style="margin-left:auto;color:${c.fg_secondary};font-size:.75rem">100%</span>
+        </div>
+        <div style="display:flex;align-items:center">
+          <div class="pv-tiny-btn" style="background:${c.bg_tertiary};color:${c.fg_primary}">−</div>
+          <div class="pv-slider-track" style="background:${c.bg_tertiary}">
+            <div class="pv-slider-thumb" style="left:60%;background:${c.accent}"></div>
+          </div>
+          <div class="pv-tiny-btn" style="background:${c.bg_tertiary};color:${c.fg_primary}">+</div>
+        </div>
       </div>
     </div>`,
 
+  // ── ADVANCED (Advanced.png) ──
   advanced: c => `
     <div class="pv-header" style="background:${c.bg_tertiary};color:${c.header_text}">
       <span class="pv-back" onclick="pvGoBack()">‹</span><span>Advanced</span>
     </div>
-    <div class="pv-body" style="background:${c.bg_primary}">
-      <div class="pv-row" style="background:${c.bg_secondary}">
-        <div class="pv-row-label" style="color:${c.fg_primary}">Developer Mode</div>
-        <div class="pv-toggle" style="background:${c.accent}"></div>
+    <div class="pv-body" style="background:${c.bg_primary};padding-top:0">
+      <div class="pv-section-title" style="color:${c.fg_secondary};margin-top:.3rem">General</div>
+      <div class="pv-row" style="background:${c.bg_secondary};align-items:flex-start">
+        <div style="flex:1">
+          <div style="color:${c.fg_primary};font-size:.8rem">Developer Mode</div>
+          <div style="color:${c.fg_secondary};font-size:.68rem;margin-top:.15rem">Exposes context menu items for the Discord API.</div>
+        </div>
+        <div class="pv-toggle" style="background:${c.accent};margin-top:.1rem"></div>
       </div>
       <div class="pv-section-title" style="color:${c.fg_secondary}">LaunchPad</div>
-      <div class="pv-row" style="background:${c.bg_secondary}">
-        <div class="pv-radio on" style="border-color:${c.accent};color:${c.accent}"></div>
-        <div class="pv-row-label" style="color:${c.fg_primary}">Full Screen Gesture</div>
+      <div class="pv-row" style="background:${c.bg_secondary};align-items:flex-start">
+        <div class="pv-radio on" style="border-color:${c.accent};color:${c.accent};margin-top:.15rem"></div>
+        <div style="flex:1">
+          <div style="color:${c.fg_primary};font-size:.8rem">Full Screen Gesture</div>
+          <div style="color:${c.fg_secondary};font-size:.68rem;margin-top:.1rem">Right-to-left gesture to activate Launch Pad.</div>
+        </div>
+      </div>
+      <div class="pv-row" style="background:${c.bg_secondary};align-items:flex-start">
+        <div class="pv-radio" style="border-color:${c.fg_secondary};margin-top:.15rem"></div>
+        <div style="flex:1">
+          <div style="color:${c.fg_primary};font-size:.8rem">Pull Tab</div>
+          <div style="color:${c.fg_secondary};font-size:.68rem;margin-top:.1rem">A persistent pull-tab on the right edge.</div>
+        </div>
       </div>
       <div class="pv-row" style="background:${c.bg_secondary}">
         <div class="pv-radio" style="border-color:${c.fg_secondary}"></div>
         <div class="pv-row-label" style="color:${c.fg_primary}">Disabled</div>
       </div>
+      <div style="color:${c.fg_secondary};font-size:.7rem;margin-top:.3rem">Experimental faster navigation, accessible globally with a gesture or pull-tab.</div>
     </div>`,
 
+  // ── THEMES (Theme.png) ──
   themes: c => `
     <div class="pv-header" style="background:${c.bg_tertiary};color:${c.header_text}">
       <span class="pv-back" onclick="pvGoBack()">‹</span><span>Themes</span>
+      <span class="pv-hsearch">🔗 Browse</span>
     </div>
-    <div class="pv-body" style="background:${c.bg_primary}">
-      <div class="pv-card" style="background:${c.bg_secondary};display:flex;align-items:center;gap:.6rem">
-        <div style="flex:1">
-          <div style="color:${c.fg_primary};font-weight:700;font-size:.82rem">${esc(document.getElementById('meta-name')?.value.trim() || 'My Theme')}</div>
-          <div style="color:${c.fg_secondary};font-size:.72rem">by ${esc(document.getElementById('meta-author')?.value.trim() || 'Anonymous')}</div>
+    <div class="pv-body" style="background:${c.bg_primary};padding-top:0">
+      <div class="pv-searchbox" style="border-color:${c.fg_secondary}66;color:${c.fg_secondary};margin:.2rem 0 .8rem">🔍 Search</div>
+      <div class="pv-card" style="background:${c.bg_secondary}">
+        <div style="display:flex;align-items:center;gap:.6rem">
+          <div style="flex:1;min-width:0">
+            <div style="color:${c.fg_primary};font-weight:700;font-size:.82rem">${esc(document.getElementById('meta-name')?.value.trim() || 'My Theme')}</div>
+            <div style="color:${c.fg_secondary};font-size:.72rem">by ${esc(document.getElementById('meta-author')?.value.trim() || 'Anonymous')}</div>
+          </div>
+          <span class="pv-tiny-btn" style="background:${c.bg_tertiary};color:${c.fg_secondary}">ⓘ</span>
+          <div class="pv-radio on" style="border-color:${c.accent};color:${c.accent}"></div>
         </div>
-        <div class="pv-radio on" style="border-color:${c.accent};color:${c.accent}"></div>
+        <div style="color:${c.fg_secondary};font-size:.72rem;margin-top:.5rem">Live preview of the theme you're building right now — applied instantly.</div>
       </div>
-      <div class="pv-card" style="background:${c.bg_secondary};display:flex;align-items:center;gap:.6rem;opacity:.6">
-        <div style="flex:1;color:${c.fg_secondary};font-size:.8rem">Another theme</div>
-        <div class="pv-radio" style="border-color:${c.fg_secondary}"></div>
+      <div class="pv-card" style="background:${c.bg_secondary};opacity:.6">
+        <div style="display:flex;align-items:center;gap:.6rem">
+          <div style="flex:1;color:${c.fg_secondary};font-size:.8rem">Another theme<br><span style="font-size:.7rem">by someone else</span></div>
+          <span class="pv-tiny-btn" style="background:${c.bg_tertiary};color:${c.fg_secondary}">ⓘ</span>
+          <div class="pv-radio" style="border-color:${c.fg_secondary}"></div>
+        </div>
       </div>
     </div>`,
 };
@@ -1381,6 +1641,15 @@ function buildJson() {
     },
     spec: 2
   };
+  if (bgImageFile) {
+    const blurRaw  = parseFloat(document.getElementById('bg-blur')?.value);
+    const alphaRaw = parseFloat(document.getElementById('bg-alpha')?.value);
+    obj.background = {
+      blur: isNaN(blurRaw) ? 0.5 : blurRaw,
+      url: `./${currentFolder()}/${bgImageRenamedName()}`,
+      alpha: isNaN(alphaRaw) ? 0.7 : alphaRaw,
+    };
+  }
   return JSON.stringify(obj, null, 2);
 }
 
@@ -1417,6 +1686,7 @@ function updateSubmitCard() {
   const folder = currentFolder();
   const tag = `${folder}/${folder}.json`;
   document.getElementById('submit-filetag').textContent = tag;
+  updateImageRenameLabels();
 }
 
 function submitTheme() {
@@ -1426,13 +1696,31 @@ function submitTheme() {
   const path   = `${folder}/${folder}.json`;
   const json   = buildJson();
 
+  let imageLine = '';
+  let imageNote = '';
+  if (bgImageFile) {
+    const imgName = bgImageRenamedName();
+    const imgPath = `${folder}/${imgName}`;
+
+    // the renamed image can't be pre-attached to a GitHub "new issue" URL,
+    // so trigger a one-off download of just that file — the user drags it
+    // into the issue that's about to open.
+    const a = document.createElement('a');
+    a.href = bgImageObjectUrl;
+    a.download = imgName;
+    a.click();
+
+    imageLine = `\n**Background image:** \`${imgPath}\` — downloaded as **${imgName}**, drag it into this issue (or attach it) before submitting.\n`;
+    imageNote = ` and add the attached image at \`${imgPath}\``;
+  }
+
   const title = `New theme: ${name}`;
   const body =
 `**Theme name:** ${name}
 **Author:** ${author}
 **Suggested path:** \`${path}\`
-
-Submitted via the BunnThemes creator — no fork needed, just paste this JSON into \`${path}\` to add it.
+${imageLine}
+Submitted via the BunnThemes creator — no fork needed, just paste this JSON into \`${path}\`${imageNote} to add it.
 
 \`\`\`json
 ${json}
@@ -1443,7 +1731,8 @@ ${json}
     + '?title=' + encodeURIComponent(title)
     + '&body='  + encodeURIComponent(body);
 
-  window.open(url, '_blank', 'noopener');
+  // give the download a beat before the new tab steals focus
+  setTimeout(() => window.open(url, '_blank', 'noopener'), bgImageFile ? 300 : 0);
 }
 
 // ═══════════════════════════════════════════════
